@@ -1,24 +1,53 @@
 {
-  "name": "cc-desk",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
-  },
-  "dependencies": {
-    "vue": "^3.5.13",
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-opener": "^2"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.3",
-    "vue-tsc": "^2.1.10",
-    "@tauri-apps/cli": "^2"
-  }
+	"name": "cc-desk",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vue-tsc --noEmit && vite build",
+		"preview": "vite preview",
+		"tauri": "tauri",
+		"lint": "eslint src/",
+		"lint:fix": "eslint src/ --fix",
+		"format": "prettier --write \"src/**/*.{ts,vue,css,json}\"",
+		"format:check": "prettier --check \"src/**/*.{ts,vue,css,json}\"",
+		"format:rs": "cd src-tauri && cargo fmt",
+		"format:rs:check": "cd src-tauri && cargo fmt --check",
+		"lint:rs": "cd src-tauri && cargo clippy -- -D warnings",
+		"lint-staged": "lint-staged",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{ts,vue}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*.{css,json,md}": [
+			"prettier --write"
+		],
+		"*.rs": [
+			"rustfmt --edition 2021"
+		]
+	},
+	"dependencies": {
+		"@tauri-apps/api": "^2",
+		"@tauri-apps/plugin-opener": "^2",
+		"vue": "^3.5.13"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@tauri-apps/cli": "^2",
+		"@vitejs/plugin-vue": "^5.2.1",
+		"eslint": "^9.39.4",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-vue": "^10.9.2",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.0.7",
+		"prettier": "^3.8.3",
+		"typescript": "~5.6.2",
+		"typescript-eslint": "8.60.0",
+		"vite": "^6.0.3",
+		"vue-tsc": "^2.1.10"
+	}
 }
