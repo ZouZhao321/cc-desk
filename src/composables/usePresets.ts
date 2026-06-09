@@ -12,7 +12,7 @@ export function usePresets() {
 	async function loadPresets() {
 		loading.value = true
 		try {
-			const store = await load(STORE_FILE, { autoSave: false })
+			const store = await load(STORE_FILE, { defaults: {}, autoSave: false })
 			const data = await store.get<PresetStore>('data')
 			if (data) {
 				presets.value = data.presets
@@ -27,7 +27,7 @@ export function usePresets() {
 	}
 
 	async function persistStore() {
-		const store = await load(STORE_FILE, { autoSave: false })
+		const store = await load(STORE_FILE, { defaults: {}, autoSave: false })
 		const data: PresetStore = {
 			presets: presets.value,
 			active_preset_id: activePresetId.value

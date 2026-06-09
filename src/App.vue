@@ -1,158 +1,100 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { invoke } from '@tauri-apps/api/core'
+import { ref, onMounted } from 'vue'
+import { NConfigProvider, NSpace, NButton, NH2, NSpin, NAlert, NMessageProvider } from 'naive-ui'
+import ConfigCard from './components/ConfigCard.vue'
+import PresetList from './components/PresetList.vue'
+import PresetDialog from './components/PresetDialog.vue'
+import { useSettings } from './composables/useSettings'
+import { usePresets } from './composables/usePresets'
+import type { ConfigField } from './types'
 
-const greetMsg = ref('')
-const name = ref('')
+const { config, dirty, loading, error, loadConfig, saveConfig, updateField, applyConfig } = useSettings()
+const { presets, activePresetId, addPreset, deletePreset, applyPreset } = usePresets()
 
-async function greet() {
-	// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-	greetMsg.value = await invoke('greet', { name: name.value })
+const showDialog = ref(false)
+
+const configFields: ConfigField[] = [
+	{ key: 'auth_token', label: 'API Token', icon: '🔑', sensitive: true },
+	{ key: 'base_url', label: 'Base URL', icon: '🌐', sensitive: false },
+	{ key: 'model', label: 'Model', icon: '🤖', sensitive: false },
+	{ key: 'reasoning_model', label: 'Reasoning Model', icon: '🧠', sensitive: false },
+	{ key: 'haiku_id', label: 'Haiku ID', icon: '🟢', sensitive: false },
+	{ key: 'haiku_name', label: 'Haiku Name', icon: '🟢', sensitive: false },
+	{ key: 'sonnet_id', label: 'Sonnet ID', icon: '🔵', sensitive: false },
+	{ key: 'sonnet_name', label: 'Sonnet Name', icon: '🔵', sensitive: false },
+	{ key: 'opus_id', label: 'Opus ID', icon: '🟣', sensitive: false },
+	{ key: 'opus_name', label: 'Opus Name', icon: '🟣', sensitive: false }
+]
+
+async function handleApplyPreset(id: string) {
+	const presetConfig = await applyPreset(id)
+	if (presetConfig) {
+		applyConfig(presetConfig)
+		await saveConfig()
+	}
 }
+
+async function handleDeletePreset(id: string) {
+	await deletePreset(id)
+}
+
+async function handleSavePreset(name: string) {
+	await addPreset(name, config.value)
+}
+
+async function handleSave() {
+	await saveConfig()
+}
+
+onMounted(loadConfig)
 </script>
 
 <template>
-	<main class="container">
-		<h1>Welcome to Tauri + Vue</h1>
+	<n-config-provider>
+		<n-message-provider>
+			<div class="p-6 max-w-3xl mx-auto">
+				<n-space align="center" justify="space-between" class="mb-4">
+					<n-h2 class="!mb-0">CC Model Switcher</n-h2>
+					<n-button type="primary" :disabled="!dirty || loading" :loading="loading" @click="handleSave">
+						保存
+					</n-button>
+				</n-space>
 
-		<div class="row">
-			<a href="https://vite.dev" target="_blank">
-				<img src="/vite.svg" class="logo vite" alt="Vite logo" />
-			</a>
-			<a href="https://tauri.app" target="_blank">
-				<img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-			</a>
-			<a href="https://vuejs.org/" target="_blank">
-				<img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-			</a>
-		</div>
-		<p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
+				<n-alert v-if="error" type="error" class="mb-4" closable>
+					{{ error }}
+				</n-alert>
 
-		<form class="row" @submit.prevent="greet">
-			<input id="greet-input" v-model="name" placeholder="Enter a name..." />
-			<button type="submit">Greet</button>
-		</form>
-		<p>{{ greetMsg }}</p>
-	</main>
+				<n-space v-if="loading && !config.auth_token" justify="center" class="py-12">
+					<n-spin size="large" />
+				</n-space>
+
+				<template v-else>
+					<div class="mb-6">
+						<div class="text-sm text-gray-500 mb-3">当前配置</div>
+						<div class="flex flex-wrap gap-3">
+							<config-card
+								v-for="field in configFields"
+								:key="field.key"
+								:label="field.label"
+								:icon="field.icon"
+								:model-value="config[field.key]"
+								:sensitive="field.sensitive"
+								@update:model-value="updateField(field.key, $event)"
+							/>
+						</div>
+					</div>
+
+					<preset-list
+						:presets="presets"
+						:active-preset-id="activePresetId"
+						@apply="handleApplyPreset"
+						@delete="handleDeletePreset"
+						@new-preset="showDialog = true"
+					/>
+				</template>
+
+				<preset-dialog v-model:show="showDialog" @save="handleSavePreset" />
+			</div>
+		</n-message-provider>
+	</n-config-provider>
 </template>
-
-<style scoped>
-.logo.vite:hover {
-	filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-	filter: drop-shadow(0 0 2em #249b73);
-}
-</style>
-<style>
-:root {
-	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-	font-size: 16px;
-	line-height: 24px;
-	font-weight: 400;
-
-	color: #0f0f0f;
-	background-color: #f6f6f6;
-
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-text-size-adjust: 100%;
-}
-
-.container {
-	margin: 0;
-	padding-top: 10vh;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	text-align: center;
-}
-
-.logo {
-	height: 6em;
-	padding: 1.5em;
-	will-change: filter;
-	transition: 0.75s;
-}
-
-.logo.tauri:hover {
-	filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-	display: flex;
-	justify-content: center;
-}
-
-a {
-	font-weight: 500;
-	color: #646cff;
-	text-decoration: inherit;
-}
-
-a:hover {
-	color: #535bf2;
-}
-
-h1 {
-	text-align: center;
-}
-
-input,
-button {
-	border-radius: 8px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
-	font-family: inherit;
-	color: #0f0f0f;
-	background-color: #ffffff;
-	transition: border-color 0.25s;
-	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-	cursor: pointer;
-}
-
-button:hover {
-	border-color: #396cd8;
-}
-button:active {
-	border-color: #396cd8;
-	background-color: #e8e8e8;
-}
-
-input,
-button {
-	outline: none;
-}
-
-#greet-input {
-	margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		color: #f6f6f6;
-		background-color: #2f2f2f;
-	}
-
-	a:hover {
-		color: #24c8db;
-	}
-
-	input,
-	button {
-		color: #ffffff;
-		background-color: #0f0f0f98;
-	}
-	button:active {
-		background-color: #0f0f0f69;
-	}
-}
-</style>
