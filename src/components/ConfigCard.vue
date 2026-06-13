@@ -31,6 +31,11 @@ function cancelEdit() {
 	editing.value = false
 }
 
+function handleKeyup(e: { key: string }) {
+	if (e.key === 'Enter') confirmEdit()
+	if (e.key === 'Escape') cancelEdit()
+}
+
 function displayValue(): string {
 	if (!props.modelValue) return '(未设置)'
 	if (props.sensitive) return maskToken(props.modelValue)
@@ -56,8 +61,7 @@ function displayValue(): string {
 					size="small"
 					:type="sensitive ? 'password' : 'text'"
 					:placeholder="label"
-					@keyup.enter="confirmEdit"
-					@keyup.escape="cancelEdit"
+					@keyup="handleKeyup"
 				/>
 				<n-space :size="4" justify="end">
 					<n-button size="tiny" @click="cancelEdit">取消</n-button>
