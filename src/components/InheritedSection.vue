@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { InheritedItem } from '../types'
 
 defineProps<{
@@ -7,11 +8,16 @@ defineProps<{
 	items: InheritedItem[]
 	showLock?: boolean
 }>()
+
+const collapsed = ref(true)
 </script>
 
 <template>
 	<div class="flex flex-col bg-white rounded-10px border border-gray-200">
-		<div class="flex items-center gap-12px px-16px py-14px">
+		<div
+			class="flex items-center gap-12px px-16px py-14px cursor-pointer select-none"
+			@click="collapsed = !collapsed"
+		>
 			<svg
 				width="16"
 				height="16"
@@ -21,6 +27,8 @@ defineProps<{
 				stroke-width="2"
 				stroke-linecap="round"
 				stroke-linejoin="round"
+				class="transition-transform duration-200"
+				:class="{ '-rotate-90': collapsed }"
 			>
 				<path d="m6 9 6 6 6-6" />
 			</svg>
@@ -56,7 +64,7 @@ defineProps<{
 			</svg>
 		</div>
 
-		<div class="flex flex-col gap-8px px-16px pb-12px">
+		<div v-show="!collapsed" class="flex flex-col gap-8px px-16px pb-12px">
 			<div
 				v-for="item in items"
 				:key="item.id"
