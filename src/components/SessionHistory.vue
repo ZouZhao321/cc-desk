@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { NCard, NEmpty, NSpin, NButton } from 'naive-ui'
+import { computed, ref, watch } from 'vue'
+import { NEmpty, NSpin, NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
@@ -31,6 +31,18 @@ const groupedSessions = computed(() => {
 	return Object.entries(groups)
 })
 
+const collapseValue = ref<string[]>([])
+
+watch(
+	groupedSessions,
+	newGroups => {
+		if (collapseValue.value.length === 0 && newGroups.length > 0) {
+			collapseValue.value = newGroups.map(([path]) => path)
+		}
+	},
+	{ immediate: true }
+)
+
 const noteInputValue = computed({
 	get: () => currentNote.value,
 	set: (val: string) => {
@@ -58,22 +70,6 @@ function handleNoteSave(sessionId: string, note: string) {
 
 // 初始加载
 loadSessions()
-
-const collapsedGroups = ref(new Set<string>())
-
-function toggleGroup(path: string) {
-	const newSet = new Set(collapsedGroups.value)
-	if (newSet.has(path)) {
-		newSet.delete(path)
-	} else {
-		newSet.add(path)
-	}
-	collapsedGroups.value = newSet
-}
-
-function isCollapsed(path: string): boolean {
-	return collapsedGroups.value.has(path)
-}
 </script>
 
 <template>
@@ -82,7 +78,7 @@ function isCollapsed(path: string): boolean {
 			<div class="flex items-center gap-16px">
 				<span class="text-20px font-bold text-[#FF6B35]">CC-Desk</span>
 				<div class="flex-1"></div>
-				<NButton size="small" @click="handleRefresh"> 刷新 </NButton>
+				<NButton size="small" @click="handleRefresh">刷新</NButton>
 			</div>
 		</header>
 
@@ -95,31 +91,21 @@ function isCollapsed(path: string): boolean {
 					<NButton size="small" @click="handleRefresh">重试</NButton>
 				</div>
 				<NEmpty v-else-if="sessions.length === 0" description="暂无会话记录" class="py-48px" />
-				<div v-else class="flex flex-col gap-16px">
-					<NCard
+				<NCollapse v-else v-model:value="collapseValue">
+					<NCollapseItem
 						v-for="[projectPath, projectSessions] in groupedSessions"
 						:key="projectPath"
-						size="small"
-						:segmented="{ content: true }"
+						:name="projectPath"
 					>
 						<template #header>
-							<div
-								class="flex items-center gap-8px cursor-pointer select-none"
-								@click="toggleGroup(projectPath)"
-							>
-								<span
-									class="text-14px transition-transform"
-									:class="{ 'rotate-90': !isCollapsed(projectPath) }"
-								>
-									▶
-								</span>
+							<div class="flex items-center gap-8px">
 								<span class="text-14px font-600">{{ projectPath }}</span>
-								<span class="text-12px text-gray-400 ml-8px"
-									>{{ projectSessions.length }} sessions</span
-								>
+								<NTag size="small" :bordered="false" type="info">
+									{{ projectSessions.length }}
+								</NTag>
 							</div>
 						</template>
-						<div v-show="!isCollapsed(projectPath)" class="flex flex-col gap-8px">
+						<div class="flex flex-col gap-8px">
 							<SessionCard
 								v-for="session in projectSessions"
 								:key="session.session_id"
@@ -128,8 +114,8 @@ function isCollapsed(path: string): boolean {
 								@click="handleCardClick"
 							/>
 						</div>
-					</NCard>
-				</div>
+					</NCollapseItem>
+				</NCollapse>
 			</main>
 		</template>
 
