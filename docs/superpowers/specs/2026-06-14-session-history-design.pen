@@ -1,0 +1,780 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "DCk7P",
+      "x": 4346,
+      "y": -398,
+      "name": "Session History - List View",
+      "clip": true,
+      "width": 960,
+      "height": 640,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "BJ214",
+          "name": "Top Bar",
+          "width": 960,
+          "height": 56,
+          "fill": "#FFFFFF",
+          "gap": 16,
+          "padding": [
+            0,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "LE7hB",
+              "fill": "#FF6B35",
+              "content": "CC-Desk",
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "TeDqD",
+              "name": "Spacer",
+              "width": 600,
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "x51Xz",
+              "name": "Tab Config",
+              "cornerRadius": 6,
+              "padding": [
+                6,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "yT0u7",
+                  "fill": "#666666",
+                  "content": "Config",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ppkmb",
+              "name": "Tab Sessions",
+              "fill": "#6366F1",
+              "cornerRadius": 6,
+              "padding": [
+                6,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Se2mh",
+                  "fill": "#FFFFFF",
+                  "content": "Sessions",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OuGPE",
+          "name": "Main Content",
+          "width": 960,
+          "height": 584,
+          "fill": "#F8F9FA",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            16,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "rVXyJ",
+              "name": "Project Header",
+              "width": 912,
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "uHUDr",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "folder",
+                  "library": "lucide",
+                  "fill": "#6366F1"
+                },
+                {
+                  "type": "text",
+                  "id": "PY4Mk",
+                  "fill": "#374151",
+                  "content": "cc-desk",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "pKmPF",
+                  "fill": "#9CA3AF",
+                  "content": "24 sessions",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "J2DxuG",
+              "name": "Card 1",
+              "width": 912,
+              "fill": "#FFFFFF",
+              "cornerRadius": 10,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                14,
+                18
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ovvd2",
+                  "name": "Meta",
+                  "width": 876,
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jK4BI",
+                      "fill": "#111827",
+                      "content": "2026-06-12 21:21",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "H0deL",
+                      "fill": "#9CA3AF",
+                      "content": "·",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "O76Rq",
+                      "fill": "#6366F1",
+                      "content": "C:\\Users\\ZouZhao\\Desktop\\cc-desk",
+                      "fontFamily": "Geist Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "lv1gf",
+                      "fill": "#9CA3AF",
+                      "content": "· 42 messages",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nWwlL",
+                  "name": "Note",
+                  "width": 876,
+                  "fill": "#EEF2FF",
+                  "cornerRadius": 6,
+                  "gap": 6,
+                  "padding": [
+                    6,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "YvZ2c",
+                      "width": 12,
+                      "height": 12,
+                      "icon": "message-square",
+                      "library": "lucide",
+                      "fill": "#6366F1"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iTU3U",
+                      "fill": "#6366F1",
+                      "content": "Tauri IPC 超时，原因是插件注册顺序",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s1DhH",
+              "name": "Card 2",
+              "width": 912,
+              "fill": "#FFFFFF",
+              "cornerRadius": 10,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                14,
+                18
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GWhQs",
+                  "name": "Meta",
+                  "width": 876,
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YLbgD",
+                      "fill": "#111827",
+                      "content": "2026-06-12 18:05",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UaaV4",
+                      "fill": "#9CA3AF",
+                      "content": "·",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UJEHh",
+                      "fill": "#9CA3AF",
+                      "content": "C:\\Users\\ZouZhao\\Desktop\\cc-desk",
+                      "fontFamily": "Geist Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "HS2se",
+                      "fill": "#9CA3AF",
+                      "content": "· 38 messages",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IL4wG",
+                  "name": "Note",
+                  "width": 876,
+                  "fill": "#F3F4F6",
+                  "cornerRadius": 6,
+                  "gap": 6,
+                  "padding": [
+                    6,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "leI7S",
+                      "width": 12,
+                      "height": 12,
+                      "icon": "message-square",
+                      "library": "lucide",
+                      "fill": "#9CA3AF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FTerd",
+                      "fill": "#9CA3AF",
+                      "content": "未添加备注",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a29ZH",
+              "name": "Card 3",
+              "width": 912,
+              "fill": "#FFFFFF",
+              "cornerRadius": 10,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                14,
+                18
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wuqgE",
+                  "name": "Meta",
+                  "width": 876,
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RgPbc",
+                      "fill": "#111827",
+                      "content": "2026-06-11 14:32",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t1Lny",
+                      "fill": "#9CA3AF",
+                      "content": "·",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EPSWu",
+                      "fill": "#6366F1",
+                      "content": "C:\\Users\\ZouZhao\\Desktop\\cc-desk",
+                      "fontFamily": "Geist Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "amg9h",
+                      "fill": "#9CA3AF",
+                      "content": "· 127 messages",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m465z8",
+                  "name": "Note",
+                  "width": 876,
+                  "fill": "#EEF2FF",
+                  "cornerRadius": 6,
+                  "gap": 6,
+                  "padding": [
+                    6,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "Z5n23a",
+                      "width": 12,
+                      "height": 12,
+                      "icon": "message-square",
+                      "library": "lucide",
+                      "fill": "#6366F1"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d6MWQm",
+                      "fill": "#6366F1",
+                      "content": "重构 ConfigCard 组件，支持展示/编辑模式和 token 脱敏",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "qkwXq",
+      "x": 5426,
+      "y": -398,
+      "name": "Session History - Detail View",
+      "clip": true,
+      "width": 960,
+      "height": 640,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "W8VBZ",
+          "name": "Top Bar",
+          "width": 960,
+          "height": 56,
+          "fill": "#FFFFFF",
+          "gap": 16,
+          "padding": [
+            0,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "w5iRVW",
+              "width": 18,
+              "height": 18,
+              "icon": "arrow-left",
+              "library": "lucide",
+              "fill": "#666666"
+            },
+            {
+              "type": "text",
+              "id": "ep3ut",
+              "fill": "#666666",
+              "content": "Back",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "QT5h0",
+              "name": "Spacer",
+              "width": 400,
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "OcPn0",
+              "name": "Project Info",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WJPcl",
+                  "fill": "#111827",
+                  "content": "cc-desk",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "CvKDh",
+                  "fill": "#9CA3AF",
+                  "content": "2026-06-12 21:21 · v2.1.170 · 42 messages",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "CT5Pv",
+          "name": "Divider",
+          "width": 960,
+          "height": 1,
+          "fill": "#E5E7EB"
+        },
+        {
+          "type": "frame",
+          "id": "V4cdx",
+          "name": "Chat Area",
+          "width": 960,
+          "height": 500,
+          "fill": "#F8F9FA",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            20,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "gmXPf",
+              "name": "User Message",
+              "width": 864,
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n5J8EH",
+                  "fill": "#9CA3AF",
+                  "content": "USER · 21:21:14",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "CsJQu",
+                  "fill": "#111827",
+                  "textGrowth": "fixed-width",
+                  "width": 864,
+                  "content": "Create the following design task in the kLFD9 nodes.\n\nTask: 设计 CC-Desk 的 MCP 配置子区块。使用 Dark Centered Platform 风格。",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "b1D2iQ",
+              "name": "Assistant Message",
+              "width": 864,
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n2BRfV",
+                  "fill": "#6366F1",
+                  "content": "ASSISTANT · 21:21:19 · mimo-v2.5",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "UvDpF",
+                  "fill": "#111827",
+                  "textGrowth": "fixed-width",
+                  "width": 864,
+                  "content": "Let me analyze the target node and overall document structure to understand what we are working with.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "h4zr6R",
+              "name": "Tool Call",
+              "width": 864,
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j6JsY",
+                  "fill": "#6366F1",
+                  "content": "TOOL USE · batch_get",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "X57Hw",
+                  "name": "Tool Box",
+                  "width": 864,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 6,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mMNF0",
+                      "fill": "#374151",
+                      "content": "nodes: [\"kLFD9\"], read_depth: 3",
+                      "fontFamily": "Geist Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rhGDI",
+              "name": "Tool Result",
+              "width": 864,
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "N57UG",
+                  "fill": "#9CA3AF",
+                  "content": "TOOL RESULT · batch_get",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "ocolu",
+                  "name": "Result Box",
+                  "width": 864,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 6,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Uji5W",
+                      "fill": "#374151",
+                      "content": "[{\"type\":\"frame\",\"id\":\"kLFD9\",\"name\":\"MCP Section\",\"width\":1100,\"height\":700}]",
+                      "fontFamily": "Geist Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d4dNZ0",
+              "name": "Thinking",
+              "width": 864,
+              "fill": "#F3F4F6",
+              "cornerRadius": 6,
+              "gap": 8,
+              "padding": [
+                8,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "d2dU6C",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "brain",
+                  "library": "lucide",
+                  "fill": "#9CA3AF"
+                },
+                {
+                  "type": "text",
+                  "id": "oeuPO",
+                  "fill": "#9CA3AF",
+                  "content": "Thinking...",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "m3oxP",
+          "name": "Note Section",
+          "width": 960,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": [
+            12,
+            48,
+            16,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "WSIlm",
+              "fill": "#6B7280",
+              "content": "Note",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "McFaI",
+              "name": "Note Input",
+              "width": 864,
+              "fill": "#F9FAFB",
+              "cornerRadius": 6,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                10,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BjAdQ",
+                  "fill": "#111827",
+                  "content": "Tauri IPC 超时，原因是插件注册顺序",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
