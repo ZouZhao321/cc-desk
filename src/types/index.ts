@@ -62,3 +62,45 @@ export interface ProjectListItem {
 	language: string
 	syncTime: string
 }
+
+/** 会话元数据（列表页使用） */
+export interface SessionMeta {
+	session_id: string
+	project_path: string
+	started_at: string | null
+	message_count: number
+	version: string | null
+}
+
+/** 消息角色 */
+export type MessageRole = 'user' | 'assistant' | 'system'
+
+/** 消息内容块 */
+export type ContentBlock =
+	| { type: 'text'; text: string }
+	| { type: 'thinking'; thinking: string }
+	| { type: 'tool_use'; id: string; name: string; input: unknown }
+	| { type: 'tool_result'; tool_use_id: string; content: string }
+	| { type: 'attachment'; attachment_type: string; content: string }
+
+/** 完整消息（详情页使用） */
+export interface Message {
+	uuid: string
+	parent_uuid: string | null
+	timestamp: string
+	role: MessageRole
+	content: ContentBlock[]
+	model: string | null
+	is_sidechain: boolean
+}
+
+/** 会话笔记 */
+export interface SessionNote {
+	session_id: string
+	note: string
+}
+
+/** 笔记存储数据 */
+export interface NoteStore {
+	notes: Record<string, string>
+}
