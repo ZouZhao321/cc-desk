@@ -190,7 +190,7 @@ const isLargeItem = computed(() => props.activeTab !== 'skills')
 					/>
 				</div>
 
-				<div v-if="activeTab !== 'project'" class="flex flex-col gap-12px">
+				<div class="flex flex-col gap-12px">
 					<div v-if="isProject" class="flex items-center justify-between">
 						<span class="text-15px font-600 text-gray-900">
 							{{
