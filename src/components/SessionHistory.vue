@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
@@ -57,6 +57,20 @@ function handleNoteSave(sessionId: string, note: string) {
 
 // 初始加载
 loadSessions()
+
+const collapsedGroups = ref<Set<string>>(new Set())
+
+function toggleGroup(path: string) {
+	if (collapsedGroups.value.has(path)) {
+		collapsedGroups.value.delete(path)
+	} else {
+		collapsedGroups.value.add(path)
+	}
+}
+
+function isCollapsed(path: string): boolean {
+	return collapsedGroups.value.has(path)
+}
 </script>
 
 <template>
@@ -100,7 +114,20 @@ loadSessions()
 						:key="projectPath"
 						class="flex flex-col gap-12px"
 					>
-						<div class="flex items-center gap-8px px-0 py-8px">
+						<div
+							class="flex items-center gap-8px px-0 py-8px cursor-pointer select-none"
+							@click="toggleGroup(projectPath)"
+						>
+							<svg
+								class="w-12px h-12px text-gray-400 transition-transform"
+								:class="{ 'rotate-90': !isCollapsed(projectPath) }"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M9 18l6-6-6-6" />
+							</svg>
 							<svg
 								class="w-14px h-14px text-indigo-500"
 								viewBox="0 0 24 24"
@@ -113,7 +140,7 @@ loadSessions()
 							<span class="text-13px font-600 text-gray-700">{{ projectPath }}</span>
 							<span class="text-12px text-gray-400">{{ projectSessions.length }} sessions</span>
 						</div>
-						<div class="flex flex-col gap-12px">
+						<div v-show="!isCollapsed(projectPath)" class="flex flex-col gap-12px">
 							<SessionCard
 								v-for="session in projectSessions"
 								:key="session.session_id"
