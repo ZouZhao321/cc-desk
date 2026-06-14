@@ -58,14 +58,16 @@ function handleNoteSave(sessionId: string, note: string) {
 // 初始加载
 loadSessions()
 
-const collapsedGroups = ref<Set<string>>(new Set())
+const collapsedGroups = ref(new Set<string>())
 
 function toggleGroup(path: string) {
-	if (collapsedGroups.value.has(path)) {
-		collapsedGroups.value.delete(path)
+	const newSet = new Set(collapsedGroups.value)
+	if (newSet.has(path)) {
+		newSet.delete(path)
 	} else {
-		collapsedGroups.value.add(path)
+		newSet.add(path)
 	}
+	collapsedGroups.value = newSet
 }
 
 function isCollapsed(path: string): boolean {
