@@ -32,14 +32,9 @@ function truncateNote(note: string, maxLen: number = 50): string {
 		class="flex flex-col gap-8px p-14px_18px bg-white rounded-10px border border-gray-200 cursor-pointer hover:border-blue-400 transition-colors"
 		@click="$emit('click', session.session_id)"
 	>
-		<div class="flex items-center gap-8px text-13px">
+		<div class="flex items-center justify-between text-13px">
 			<span class="font-500 text-gray-900">{{ formatDate(session.started_at) }}</span>
-			<span class="text-gray-400">·</span>
-			<span class="font-mono text-11px" :class="session.project_path ? 'text-indigo-500' : 'text-gray-400'">
-				{{ session.project_path || '未知路径' }}
-			</span>
-			<span class="text-gray-400">·</span>
-			<span class="text-gray-500">{{ session.message_count }} messages</span>
+			<span class="text-gray-400">{{ session.message_count }} messages</span>
 		</div>
 		<div v-if="note" class="flex items-center gap-6px px-10px py-6px bg-indigo-50 rounded-6px">
 			<svg
