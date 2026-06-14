@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { NCard, NEmpty, NSpin, NButton } from 'naive-ui'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
@@ -81,68 +82,44 @@ function isCollapsed(path: string): boolean {
 			<div class="flex items-center gap-16px">
 				<span class="text-20px font-bold text-[#FF6B35]">CC-Desk</span>
 				<div class="flex-1"></div>
-				<button
-					class="flex items-center gap-6px px-12px py-6px bg-gray-100 rounded-6px text-12px text-gray-600 hover:bg-gray-200 transition-colors"
-					@click="handleRefresh"
-				>
-					<svg class="w-14px h-14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M23 4v6h-6M1 20v-6h6" />
-						<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-					</svg>
-					Refresh
-				</button>
+				<NButton size="small" @click="handleRefresh"> 刷新 </NButton>
 			</div>
 		</header>
 
 		<!-- 列表视图 -->
 		<template v-if="!selectedSessionId">
 			<main class="flex-1 py-16px px-24px bg-[#F8F9FA] overflow-y-auto">
-				<div
-					v-if="loading && sessions.length === 0"
-					class="flex items-center justify-center py-48px text-gray-400"
-				>
-					加载中...
-				</div>
+				<NSpin v-if="loading && sessions.length === 0" class="py-48px" />
 				<div v-else-if="error" class="flex flex-col items-center gap-12px py-48px">
 					<span class="text-red-500">{{ error }}</span>
-					<button class="text-13px text-indigo-600 hover:underline" @click="handleRefresh">重试</button>
+					<NButton size="small" @click="handleRefresh">重试</NButton>
 				</div>
-				<div v-else-if="sessions.length === 0" class="flex items-center justify-center py-48px text-gray-400">
-					暂无会话记录
-				</div>
-				<div v-else class="flex flex-col gap-24px">
-					<div
+				<NEmpty v-else-if="sessions.length === 0" description="暂无会话记录" class="py-48px" />
+				<div v-else class="flex flex-col gap-16px">
+					<NCard
 						v-for="[projectPath, projectSessions] in groupedSessions"
 						:key="projectPath"
-						class="flex flex-col gap-12px"
+						size="small"
+						:segmented="{ content: true }"
 					>
-						<div
-							class="flex items-center gap-8px px-0 py-8px cursor-pointer select-none"
-							@click="toggleGroup(projectPath)"
-						>
-							<svg
-								class="w-12px h-12px text-gray-400 transition-transform"
-								:class="{ 'rotate-90': !isCollapsed(projectPath) }"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
+						<template #header>
+							<div
+								class="flex items-center gap-8px cursor-pointer select-none"
+								@click="toggleGroup(projectPath)"
 							>
-								<path d="M9 18l6-6-6-6" />
-							</svg>
-							<svg
-								class="w-14px h-14px text-indigo-500"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-							</svg>
-							<span class="text-13px font-600 text-gray-700">{{ projectPath }}</span>
-							<span class="text-12px text-gray-400">{{ projectSessions.length }} sessions</span>
-						</div>
-						<div v-show="!isCollapsed(projectPath)" class="flex flex-col gap-12px">
+								<span
+									class="text-14px transition-transform"
+									:class="{ 'rotate-90': !isCollapsed(projectPath) }"
+								>
+									▶
+								</span>
+								<span class="text-14px font-600">{{ projectPath }}</span>
+								<span class="text-12px text-gray-400 ml-8px"
+									>{{ projectSessions.length }} sessions</span
+								>
+							</div>
+						</template>
+						<div v-show="!isCollapsed(projectPath)" class="flex flex-col gap-8px">
 							<SessionCard
 								v-for="session in projectSessions"
 								:key="session.session_id"
@@ -151,7 +128,7 @@ function isCollapsed(path: string): boolean {
 								@click="handleCardClick"
 							/>
 						</div>
-					</div>
+					</NCard>
 				</div>
 			</main>
 		</template>
