@@ -6,6 +6,10 @@ import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
 import SessionNoteInput from './SessionNoteInput.vue'
 
+const emit = defineEmits<{
+	'detail-change': [isDetail: boolean]
+}>()
+
 const {
 	sessions,
 	currentMessages,
@@ -20,6 +24,10 @@ const {
 	clearSession,
 	getNote
 } = useSessionHistory()
+
+watch(selectedSessionId, newVal => {
+	emit('detail-change', newVal !== null)
+})
 
 const groupedSessions = computed(() => {
 	const groups: Record<string, typeof sessions.value> = {}

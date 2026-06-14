@@ -11,6 +11,7 @@ const { loadConfig } = useSettings()
 
 const activePage = ref<'config' | 'sessions'>('config')
 const currentView = ref<'list' | 'detail'>('list')
+const sessionDetailView = ref(false)
 const activeScope = ref('global')
 const activeTab = ref<'project' | 'skills' | 'mcp' | 'plugins'>('skills')
 
@@ -422,6 +423,10 @@ function handleSync() {
 	// TODO: 同步配置
 }
 
+function handleSessionDetailChange(isDetail: boolean) {
+	sessionDetailView.value = isDetail
+}
+
 onMounted(loadConfig)
 </script>
 
@@ -430,7 +435,10 @@ onMounted(loadConfig)
 		<n-message-provider>
 			<div class="flex flex-col w-full h-full bg-white font-sans">
 				<!-- 顶部 Tab 栏 -->
-				<div class="flex items-center h-40px px-24px bg-white border-b border-gray-100 shrink-0 gap-4px">
+				<div
+					v-if="!(activePage === 'sessions' && sessionDetailView)"
+					class="flex items-center h-40px px-24px bg-white border-b border-gray-100 shrink-0 gap-4px"
+				>
 					<button
 						class="flex items-center gap-6px px-12px py-6px rounded-6px text-13px transition-colors"
 						:class="
@@ -500,7 +508,7 @@ onMounted(loadConfig)
 						@override-update="handleOverrideUpdate"
 						@override-remove="handleOverrideRemove"
 					/>
-					<SessionHistory v-else-if="activePage === 'sessions'" />
+					<SessionHistory v-else-if="activePage === 'sessions'" @detail-change="handleSessionDetailChange" />
 				</div>
 			</div>
 		</n-message-provider>
