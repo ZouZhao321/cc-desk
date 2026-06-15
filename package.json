@@ -24,7 +24,9 @@
 	"lint-staged": {
 		"src/**/*.{ts,vue}": [
 			"eslint --fix",
-			"prettier --write",
+			"prettier --write"
+		],
+		"src/**/*.test.ts": [
 			"vitest run"
 		],
 		"*.{css,json,md}": [

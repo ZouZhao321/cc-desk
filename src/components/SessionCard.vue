@@ -21,7 +21,7 @@ function formatDate(dateStr: string | null): string {
 	return `${y}-${m}-${d} ${h}:${min}`
 }
 
-function truncateNote(note: string, maxLen: number = 40): string {
+function truncateNote(note: string, maxLen: number = 50): string {
 	if (!note) return ''
 	return note.length > maxLen ? note.slice(0, maxLen) + '...' : note
 }
