@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { NEmpty, NSpin, NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
+import { NEmpty, NSkeleton, NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
-import SessionNoteInput from './SessionNoteInput.vue'
 
 const emit = defineEmits<{
 	'detail-change': [isDetail: boolean]
@@ -82,7 +81,10 @@ loadSessions()
 
 <template>
 	<div class="flex flex-col w-full h-full bg-white font-sans">
-		<header class="flex items-center justify-between h-56px px-24px bg-white border-b border-gray-100 shrink-0">
+		<header
+			v-if="!selectedSessionId"
+			class="flex items-center justify-between h-56px px-24px bg-white border-b border-gray-100 shrink-0"
+		>
 			<div class="flex items-center gap-16px">
 				<span class="text-20px font-bold text-[#FF6B35]">CC-Desk</span>
 				<div class="flex-1"></div>
@@ -93,7 +95,20 @@ loadSessions()
 		<!-- 列表视图 -->
 		<template v-if="!selectedSessionId">
 			<main class="flex-1 py-16px px-24px bg-[#F8F9FA] overflow-y-auto">
-				<NSpin v-if="loading && sessions.length === 0" class="py-48px" />
+				<div v-if="loading && sessions.length === 0" class="flex flex-col gap-16px py-16px">
+					<div v-for="g in 3" :key="g" class="flex flex-col gap-8px">
+						<NSkeleton :width="200 + g * 40" :height="20" :border-radius="6" />
+						<div
+							v-for="c in 2 + g"
+							:key="c"
+							class="flex items-center gap-12px p-12px_18px bg-white rounded-10px border border-gray-200"
+						>
+							<NSkeleton :width="140" :height="14" :border-radius="4" />
+							<NSkeleton class="flex-1" :height="14" :border-radius="4" />
+							<NSkeleton :width="80" :height="14" :border-radius="4" />
+						</div>
+					</div>
+				</div>
 				<div v-else-if="error" class="flex flex-col items-center gap-12px py-48px">
 					<span class="text-red-500">{{ error }}</span>
 					<NButton size="small" @click="handleRefresh">重试</NButton>
@@ -141,14 +156,11 @@ loadSessions()
 							}
 						: null
 				"
+				:note="noteInputValue"
+				:session-id="selectedSessionId || ''"
 				@back="handleBack"
-			/>
-			<SessionNoteInput
-				v-if="selectedSessionId"
-				:model-value="noteInputValue"
-				:session-id="selectedSessionId"
-				@update:model-value="noteInputValue = $event"
-				@save="handleNoteSave"
+				@update:note="noteInputValue = $event"
+				@save-note="handleNoteSave"
 			/>
 		</template>
 	</div>

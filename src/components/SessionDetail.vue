@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Message, ContentBlock } from '../types'
 
 const props = defineProps<{
@@ -10,10 +10,14 @@ const props = defineProps<{
 		version: string | null
 		message_count: number
 	} | null
+	note: string
+	sessionId: string
 }>()
 
 const emit = defineEmits<{
 	back: []
+	'update:note': [value: string]
+	'save-note': [sessionId: string, note: string]
 }>()
 
 const expandedThinking = ref<Set<string>>(new Set())
@@ -91,9 +95,15 @@ function getAttachmentBlocks(content: ContentBlock[]): { attachment_type: string
 	)
 }
 
-const headerInfo = computed(() => {
-	if (!props.sessionInfo) return null
-	const parts = [props.sessionInfo.project_path]
+const projectName = computed(() => {
+	const p = props.sessionInfo?.project_path || ''
+	const parts = p.replace(/\\/g, '/').split('/')
+	return parts[parts.length - 1] || p
+})
+
+const metaInfo = computed(() => {
+	if (!props.sessionInfo) return ''
+	const parts: string[] = []
 	if (props.sessionInfo.started_at) {
 		const date = new Date(props.sessionInfo.started_at)
 		parts.push(date.toLocaleString())
@@ -102,29 +112,77 @@ const headerInfo = computed(() => {
 	parts.push(`${props.sessionInfo.message_count} messages`)
 	return parts.join(' · ')
 })
+
+const toolNameMap = new Map<string, string>()
+
+function getToolNameFromResult(msg: Message): string {
+	for (const block of msg.content) {
+		if (block.type === 'tool_result') {
+			const toolUseId = block.tool_use_id
+			if (toolNameMap.has(toolUseId)) {
+				return toolNameMap.get(toolUseId)!
+			}
+		}
+	}
+	return ''
+}
+
+// Build tool name map from all messages
+for (const msg of props.messages) {
+	for (const block of msg.content) {
+		if (block.type === 'tool_use') {
+			toolNameMap.set(block.id, block.name)
+		}
+	}
+}
+
+const noteValue = ref(props.note)
+const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+
+watch(
+	() => props.note,
+	newVal => {
+		noteValue.value = newVal
+	}
+)
+
+function handleNoteInput() {
+	emit('update:note', noteValue.value)
+	if (saveTimer.value) clearTimeout(saveTimer.value)
+	saveTimer.value = setTimeout(() => {
+		emit('save-note', props.sessionId, noteValue.value)
+	}, 500)
+}
+
+function handleNoteBlur() {
+	if (saveTimer.value) clearTimeout(saveTimer.value)
+	emit('save-note', props.sessionId, noteValue.value)
+}
 </script>
 
 <template>
 	<div class="flex flex-col w-full h-full bg-white">
 		<header class="flex items-center h-56px px-24px bg-white border-b border-gray-100 shrink-0 gap-16px">
 			<div
-				class="flex items-center gap-8px text-gray-500 cursor-pointer hover:text-gray-700"
+				class="flex items-center gap-8px text-[#666666] cursor-pointer hover:text-gray-700"
 				@click="emit('back')"
 			>
-				<svg class="w-16px h-16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<svg class="w-18px h-18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M19 12H5M12 19l-7-7 7-7" />
 				</svg>
 				<span class="text-14px">Back</span>
 			</div>
-			<div v-if="headerInfo" class="flex-1 text-11px font-mono text-gray-400">
-				{{ headerInfo }}
+			<div class="flex-1"></div>
+			<div v-if="sessionInfo" class="flex flex-col items-end gap-2px">
+				<span class="text-15px font-600 text-gray-900">{{ projectName }}</span>
+				<span class="text-11px font-mono text-gray-400">{{ metaInfo }}</span>
 			</div>
 		</header>
 
 		<div class="h-1px bg-gray-200 shrink-0"></div>
 
-		<main class="flex-1 overflow-y-auto py-20px px-48px">
-			<div class="flex flex-col gap-20px">
+		<main class="flex-1 overflow-y-auto bg-[#F8F9FA]">
+			<div class="flex flex-col gap-20px py-20px px-48px">
 				<div v-for="msg in messages" :key="msg.uuid" class="flex flex-col gap-6px">
 					<div class="flex items-center gap-8px text-11px font-mono">
 						<span :class="getRoleColor(msg.role)">{{ getRoleLabel(msg.role) }}</span>
@@ -143,7 +201,7 @@ const headerInfo = computed(() => {
 					<div v-for="tool in getToolUseBlocks(msg.content)" :key="tool.id" class="flex flex-col gap-6px">
 						<div class="text-11px font-mono text-indigo-600">TOOL USE · {{ tool.name }}</div>
 						<div
-							class="p-12px bg-gray-50 border border-gray-200 rounded-6px font-mono text-12px text-gray-700"
+							class="p-12px bg-white border border-gray-200 rounded-6px font-mono text-12px text-gray-700 overflow-hidden break-all max-h-200px overflow-y-auto whitespace-pre-wrap"
 						>
 							{{ JSON.stringify(tool.input, null, 2) }}
 						</div>
@@ -154,9 +212,11 @@ const headerInfo = computed(() => {
 						:key="result.tool_use_id"
 						class="flex flex-col gap-6px"
 					>
-						<div class="text-11px font-mono text-gray-400">TOOL RESULT</div>
+						<div class="text-11px font-mono text-gray-400">
+							TOOL RESULT · {{ getToolNameFromResult(msg) || 'unknown' }}
+						</div>
 						<div
-							class="p-12px bg-gray-50 border border-gray-200 rounded-6px font-mono text-12px text-gray-700 max-h-200px overflow-y-auto"
+							class="p-12px bg-white border border-gray-200 rounded-6px font-mono text-12px text-gray-700 overflow-hidden break-all max-h-200px overflow-y-auto whitespace-pre-wrap"
 						>
 							{{ result.content }}
 						</div>
@@ -164,7 +224,7 @@ const headerInfo = computed(() => {
 
 					<div v-for="(thinking, idx) in getThinkingBlocks(msg.content)" :key="idx">
 						<div
-							class="flex items-center gap-8px px-12px py-8px bg-gray-50 rounded-6px cursor-pointer"
+							class="flex items-center gap-8px px-12px py-8px bg-gray-100 rounded-6px cursor-pointer w-fit"
 							@click="toggleThinking(msg.uuid)"
 						>
 							<svg
@@ -185,7 +245,7 @@ const headerInfo = computed(() => {
 						</div>
 						<div
 							v-if="expandedThinking.has(msg.uuid)"
-							class="mt-8px p-12px bg-gray-50 border border-gray-200 rounded-6px text-13px text-gray-600 leading-relaxed whitespace-pre-wrap"
+							class="mt-8px p-12px bg-white border border-gray-200 rounded-6px text-13px text-gray-600 leading-relaxed whitespace-pre-wrap overflow-hidden break-all"
 						>
 							{{ thinking }}
 						</div>
@@ -201,5 +261,19 @@ const headerInfo = computed(() => {
 				</div>
 			</div>
 		</main>
+
+		<div class="flex flex-col gap-8px py-12px px-48px bg-white border-t border-gray-100 shrink-0">
+			<span class="text-12px font-500 text-gray-500">Note</span>
+			<div class="flex items-center px-12px py-10px bg-[#F9FAFB] border border-gray-200 rounded-6px">
+				<input
+					v-model="noteValue"
+					type="text"
+					class="flex-1 bg-transparent text-13px text-gray-900 outline-none placeholder:text-gray-400"
+					placeholder="添加备注..."
+					@input="handleNoteInput"
+					@blur="handleNoteBlur"
+				/>
+			</div>
+		</div>
 	</div>
 </template>

@@ -195,18 +195,10 @@ pub struct SessionNote {
     pub note: String,
 }
 
-/// 项目目录名转原始路径
-fn dir_name_to_project_path(dir_name: &str) -> String {
-    // 目录名格式: C--Users-ZouZhao-Desktop-cc-desk
-    // 转换为: C:\Users\ZouZhao\Desktop\cc-desk
-    let parts: Vec<&str> = dir_name.splitn(2, "--").collect();
-    if parts.len() < 2 {
-        return dir_name.to_string();
-    }
-    let drive = parts[0];
-    let rest = parts[1];
-    let path = rest.replace('-', "\\");
-    format!("{}:\\{}", drive, path)
+/// 从 JSONL 条目中提取 cwd 字段
+fn extract_cwd_from_line(line: &str) -> Option<String> {
+    let json: serde_json::Value = serde_json::from_str(line).ok()?;
+    json.get("cwd").and_then(|v| v.as_str()).map(|s| s.to_string())
 }
 
 /// 从 JSONL 第一行提取元数据
@@ -244,9 +236,6 @@ pub fn list_sessions() -> Result<Vec<SessionMeta>, String> {
             continue;
         }
 
-        let dir_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
-        let project_path = dir_name_to_project_path(dir_name);
-
         // 扫描目录下的 .jsonl 文件
         let jsonl_entries = fs::read_dir(&path).map_err(|e| format!("读取项目目录失败: {e}"))?;
         for jsonl_entry in jsonl_entries.flatten() {
@@ -270,10 +259,16 @@ pub fn list_sessions() -> Result<Vec<SessionMeta>, String> {
             let reader = BufReader::new(file);
             let mut message_count = 0;
             let mut meta = None;
+            let mut project_path = None;
 
             for line in reader.lines().map_while(Result::ok) {
                 if line.trim().is_empty() {
                     continue;
+                }
+
+                // 从 cwd 字段获取真实项目路径
+                if project_path.is_none() {
+                    project_path = extract_cwd_from_line(&line);
                 }
 
                 // 统计消息数量
@@ -285,7 +280,9 @@ pub fn list_sessions() -> Result<Vec<SessionMeta>, String> {
 
                     // 提取第一条消息作为元数据
                     if meta.is_none() {
-                        meta = extract_meta_from_line(&line, &session_id, &project_path);
+                        if let Some(ref cwd) = project_path {
+                            meta = extract_meta_from_line(&line, &session_id, cwd);
+                        }
                     }
                 }
             }
@@ -425,6 +422,62 @@ pub fn read_session(session_id: String) -> Result<Vec<Message>, String> {
     Err(format!("未找到会话: {}", session_id))
 }
 
+/// 笔记存储数据
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct NoteStore {
+    pub notes: std::collections::HashMap<String, String>,
+}
+
+/// 返回 ~/.cc-desk/annotations.json 的路径
+fn annotations_path() -> Result<PathBuf, String> {
+    let home = dirs::home_dir().ok_or_else(|| "无法确定用户主目录".to_string())?;
+    let dir = home.join(".cc-desk");
+    fs::create_dir_all(&dir).map_err(|e| format!("创建 .cc-desk 目录失败: {e}"))?;
+    Ok(dir.join("annotations.json"))
+}
+
+/// 加载所有备注
+#[command]
+pub fn load_annotations() -> Result<std::collections::HashMap<String, String>, String> {
+    let path = annotations_path()?;
+    if !path.exists() {
+        return Ok(std::collections::HashMap::new());
+    }
+    let content = fs::read_to_string(&path).map_err(|e| format!("读取 annotations.json 失败: {e}"))?;
+    let store: NoteStore =
+        serde_json::from_str(&content).map_err(|e| format!("解析 annotations.json 失败: {e}"))?;
+    Ok(store.notes)
+}
+
+/// 保存单条备注（原子写入）
+#[command]
+pub fn save_annotation(session_id: String, note: String) -> Result<(), String> {
+    let path = annotations_path()?;
+
+    // 读取现有备注
+    let mut notes: std::collections::HashMap<String, String> = if path.exists() {
+        let content =
+            fs::read_to_string(&path).map_err(|e| format!("读取 annotations.json 失败: {e}"))?;
+        let store: NoteStore =
+            serde_json::from_str(&content).map_err(|e| format!("解析 annotations.json 失败: {e}"))?;
+        store.notes
+    } else {
+        std::collections::HashMap::new()
+    };
+
+    notes.insert(session_id, note);
+    let store = NoteStore { notes };
+    let serialized =
+        serde_json::to_string_pretty(&store).map_err(|e| format!("序列化失败: {e}"))?;
+
+    // 原子写入: .tmp → rename
+    let tmp_path = path.with_extension("json.tmp");
+    fs::write(&tmp_path, &serialized).map_err(|e| format!("写入临时文件失败: {e}"))?;
+    fs::rename(&tmp_path, &path).map_err(|e| format!("重命名临时文件失败: {e}"))?;
+
+    Ok(())
+}
+
 /// 从 message.content 提取内容块
 fn extract_content(message: Option<&serde_json::Value>) -> Vec<ContentBlock> {
     let Some(msg) = message else {
@@ -491,4 +544,240 @@ fn extract_content(message: Option<&serde_json::Value>) -> Vec<ContentBlock> {
     }
 
     blocks
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── extract_cwd_from_line ──
+
+    #[test]
+    fn extract_cwd_normal() {
+        let line = r#"{"type":"attachment","cwd":"C:\\Users\\ZouZhao\\Desktop\\cc-desk","sessionId":"abc"}"#;
+        let cwd = extract_cwd_from_line(line);
+        assert_eq!(cwd.as_deref(), Some("C:\\Users\\ZouZhao\\Desktop\\cc-desk"));
+    }
+
+    #[test]
+    fn extract_cwd_missing() {
+        let line = r#"{"type":"user","message":{}}"#;
+        assert!(extract_cwd_from_line(line).is_none());
+    }
+
+    #[test]
+    fn extract_cwd_invalid_json() {
+        assert!(extract_cwd_from_line("not json").is_none());
+    }
+
+    // ── extract_meta_from_line ──
+
+    #[test]
+    fn extract_meta_with_version() {
+        let line = r#"{"timestamp":"2026-06-14T10:00:00Z","version":"1.0.30"}"#;
+        let meta = extract_meta_from_line(line, "sess-1", "my-project").unwrap();
+        assert_eq!(meta.session_id, "sess-1");
+        assert_eq!(meta.project_path, "my-project");
+        assert_eq!(meta.started_at.as_deref(), Some("2026-06-14T10:00:00Z"));
+        assert_eq!(meta.version.as_deref(), Some("1.0.30"));
+        assert_eq!(meta.message_count, 0);
+    }
+
+    #[test]
+    fn extract_meta_without_version() {
+        let line = r#"{"timestamp":"2026-06-14T10:00:00Z"}"#;
+        let meta = extract_meta_from_line(line, "sess-2", "proj").unwrap();
+        assert_eq!(meta.version, None);
+    }
+
+    #[test]
+    fn extract_meta_invalid_json() {
+        assert!(extract_meta_from_line("not json", "s", "p").is_none());
+    }
+
+    #[test]
+    fn extract_meta_missing_timestamp() {
+        let line = r#"{"version":"1.0"}"#;
+        assert!(extract_meta_from_line(line, "s", "p").is_none());
+    }
+
+    // ── extract_content ──
+
+    #[test]
+    fn extract_content_none() {
+        assert!(extract_content(None).is_empty());
+    }
+
+    #[test]
+    fn extract_content_no_content_field() {
+        let msg = serde_json::json!({"role": "user"});
+        assert!(extract_content(Some(&msg)).is_empty());
+    }
+
+    #[test]
+    fn extract_content_text_block() {
+        let msg = serde_json::json!({
+            "content": [{"type": "text", "text": "hello"}]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+        match &blocks[0] {
+            ContentBlock::Text { text } => assert_eq!(text, "hello"),
+            _ => panic!("expected Text block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_thinking_block() {
+        let msg = serde_json::json!({
+            "content": [{"type": "thinking", "thinking": "let me think..."}]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+        match &blocks[0] {
+            ContentBlock::Thinking { thinking } => assert_eq!(thinking, "let me think..."),
+            _ => panic!("expected Thinking block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_tool_use_block() {
+        let msg = serde_json::json!({
+            "content": [{
+                "type": "tool_use",
+                "id": "tu-1",
+                "name": "Read",
+                "input": {"file_path": "/tmp/test.rs"}
+            }]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+        match &blocks[0] {
+            ContentBlock::ToolUse { id, name, input } => {
+                assert_eq!(id, "tu-1");
+                assert_eq!(name, "Read");
+                assert_eq!(input["file_path"], "/tmp/test.rs");
+            }
+            _ => panic!("expected ToolUse block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_tool_result_string() {
+        let msg = serde_json::json!({
+            "content": [{
+                "type": "tool_result",
+                "tool_use_id": "tu-1",
+                "content": "file contents"
+            }]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+        match &blocks[0] {
+            ContentBlock::ToolResult { tool_use_id, content } => {
+                assert_eq!(tool_use_id, "tu-1");
+                assert_eq!(content, "file contents");
+            }
+            _ => panic!("expected ToolResult block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_tool_result_array() {
+        let msg = serde_json::json!({
+            "content": [{
+                "type": "tool_result",
+                "tool_use_id": "tu-2",
+                "content": ["line1", "line2"]
+            }]
+        });
+        let blocks = extract_content(Some(&msg));
+        match &blocks[0] {
+            ContentBlock::ToolResult { content, .. } => assert_eq!(content, "line1\nline2"),
+            _ => panic!("expected ToolResult block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_plain_string() {
+        let msg = serde_json::json!({
+            "content": "just a string"
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+        match &blocks[0] {
+            ContentBlock::Text { text } => assert_eq!(text, "just a string"),
+            _ => panic!("expected Text block"),
+        }
+    }
+
+    #[test]
+    fn extract_content_mixed_blocks() {
+        let msg = serde_json::json!({
+            "content": [
+                {"type": "text", "text": "hello"},
+                {"type": "thinking", "thinking": "hmm"},
+                {"type": "tool_use", "id": "t1", "name": "Bash", "input": {}}
+            ]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 3);
+        assert!(matches!(&blocks[0], ContentBlock::Text { .. }));
+        assert!(matches!(&blocks[1], ContentBlock::Thinking { .. }));
+        assert!(matches!(&blocks[2], ContentBlock::ToolUse { .. }));
+    }
+
+    #[test]
+    fn extract_content_unknown_type_ignored() {
+        let msg = serde_json::json!({
+            "content": [
+                {"type": "text", "text": "keep"},
+                {"type": "unknown_type", "data": "skip"}
+            ]
+        });
+        let blocks = extract_content(Some(&msg));
+        assert_eq!(blocks.len(), 1);
+    }
+
+    // ── NoteStore 序列化/反序列化 ──
+
+    #[test]
+    fn note_store_roundtrip() {
+        let mut notes = std::collections::HashMap::new();
+        notes.insert("sess-1".to_string(), "第一个备注".to_string());
+        notes.insert("sess-2".to_string(), "second note".to_string());
+        let store = NoteStore { notes };
+
+        let json = serde_json::to_string(&store).unwrap();
+        let restored: NoteStore = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored.notes.len(), 2);
+        assert_eq!(restored.notes["sess-1"], "第一个备注");
+        assert_eq!(restored.notes["sess-2"], "second note");
+    }
+
+    #[test]
+    fn note_store_empty() {
+        let store = NoteStore {
+            notes: std::collections::HashMap::new(),
+        };
+        let json = serde_json::to_string(&store).unwrap();
+        assert_eq!(json, r#"{"notes":{}}"#);
+    }
+
+    // ── MessageRole 序列化 ──
+
+    #[test]
+    fn message_role_serde() {
+        assert_eq!(serde_json::to_string(&MessageRole::User).unwrap(), r#""user""#);
+        assert_eq!(serde_json::to_string(&MessageRole::Assistant).unwrap(), r#""assistant""#);
+        assert_eq!(serde_json::to_string(&MessageRole::System).unwrap(), r#""system""#);
+    }
+
+    #[test]
+    fn message_role_deserialize() {
+        let u: MessageRole = serde_json::from_str(r#""user""#).unwrap();
+        assert_eq!(u, MessageRole::User);
+        let a: MessageRole = serde_json::from_str(r#""assistant""#).unwrap();
+        assert_eq!(a, MessageRole::Assistant);
+    }
 }

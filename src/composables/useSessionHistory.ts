@@ -1,9 +1,6 @@
 import { ref, computed } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import { load } from '@tauri-apps/plugin-store'
-import type { SessionMeta, Message, NoteStore } from '../types'
-
-const STORE_FILE = 'notes.json'
+import type { SessionMeta, Message } from '../types'
 
 export function useSessionHistory() {
 	const sessions = ref<SessionMeta[]>([])
@@ -27,23 +24,16 @@ export function useSessionHistory() {
 		loading.value = true
 		error.value = null
 		try {
-			const [sessionList, noteStore] = await Promise.all([invoke<SessionMeta[]>('list_sessions'), loadNotes()])
+			const [sessionList, noteData] = await Promise.all([
+				invoke<SessionMeta[]>('list_sessions'),
+				invoke<Record<string, string>>('load_annotations')
+			])
 			sessions.value = sessionList
-			notes.value = noteStore
+			notes.value = noteData
 		} catch (e) {
 			error.value = String(e)
 		} finally {
 			loading.value = false
-		}
-	}
-
-	async function loadNotes(): Promise<Record<string, string>> {
-		try {
-			const store = await load(STORE_FILE, { defaults: {}, autoSave: false })
-			const data = await store.get<NoteStore>('data')
-			return data?.notes ?? {}
-		} catch {
-			return {}
 		}
 	}
 
@@ -64,10 +54,7 @@ export function useSessionHistory() {
 	async function saveNote(sessionId: string, note: string) {
 		notes.value[sessionId] = note
 		try {
-			const store = await load(STORE_FILE, { defaults: {}, autoSave: false })
-			const data: NoteStore = { notes: notes.value }
-			await store.set('data', data)
-			await store.save()
+			await invoke('save_annotation', { sessionId, note })
 		} catch (e) {
 			error.value = String(e)
 		}

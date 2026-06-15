@@ -93,14 +93,3 @@ export interface Message {
 	model: string | null
 	is_sidechain: boolean
 }
-
-/** 会话笔记 */
-export interface SessionNote {
-	session_id: string
-	note: string
-}
-
-/** 笔记存储数据 */
-export interface NoteStore {
-	notes: Record<string, string>
-}
