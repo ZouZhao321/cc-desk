@@ -12,6 +12,7 @@ const { loadConfig } = useSettings()
 const activePage = ref<'config' | 'sessions'>('config')
 const currentView = ref<'list' | 'detail'>('list')
 const sessionDetailView = ref(false)
+const sessionPageActive = computed(() => activePage.value === 'sessions')
 const activeScope = ref('global')
 const activeTab = ref<'project' | 'skills' | 'mcp' | 'plugins'>('skills')
 
@@ -436,7 +437,7 @@ onMounted(loadConfig)
 			<div class="flex flex-col w-full h-full bg-white font-sans">
 				<!-- 顶部 Tab 栏 -->
 				<div
-					v-if="!(activePage === 'sessions' && sessionDetailView)"
+					v-if="!sessionPageActive"
 					class="flex items-center h-40px px-24px bg-white border-b border-gray-100 shrink-0 gap-4px"
 				>
 					<button
@@ -508,7 +509,11 @@ onMounted(loadConfig)
 						@override-update="handleOverrideUpdate"
 						@override-remove="handleOverrideRemove"
 					/>
-					<SessionHistory v-else-if="activePage === 'sessions'" @detail-change="handleSessionDetailChange" />
+					<SessionHistory
+						v-else-if="activePage === 'sessions'"
+						@detail-change="handleSessionDetailChange"
+						@back="activePage = 'config'"
+					/>
 				</div>
 			</div>
 		</n-message-provider>

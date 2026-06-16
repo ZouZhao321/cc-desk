@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { NEmpty, NSkeleton, NButton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
+import { NEmpty, NSkeleton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import SessionCard from './SessionCard.vue'
 import SessionDetail from './SessionDetail.vue'
 
 const emit = defineEmits<{
 	'detail-change': [isDetail: boolean]
+	back: []
 }>()
 
 const {
@@ -81,14 +82,45 @@ loadSessions()
 
 <template>
 	<div class="flex flex-col w-full h-full bg-white font-sans">
-		<header
-			v-if="!selectedSessionId"
-			class="flex items-center justify-between h-56px px-24px bg-white border-b border-gray-100 shrink-0"
-		>
-			<div class="flex items-center gap-16px">
-				<span class="text-20px font-bold text-[#FF6B35]">CC-Desk</span>
+		<header v-if="!selectedSessionId" class="flex items-center h-56px px-24px bg-white shrink-0">
+			<div class="flex items-center gap-20px">
+				<button
+					class="flex items-center justify-center w-24px h-24px text-[#666666] hover:text-gray-800 transition-colors"
+					@click="emit('back')"
+				>
+					<svg
+						class="w-24px h-24px"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="m15 18-6-6 6-6" />
+					</svg>
+				</button>
+				<span class="text-20px font-bold text-[#111827]">会话管理</span>
 				<div class="flex-1"></div>
-				<NButton size="small" @click="handleRefresh">刷新</NButton>
+				<button
+					class="flex items-center justify-center w-24px h-24px text-[#000000] hover:text-gray-600 transition-colors"
+					@click="handleRefresh"
+				>
+					<svg
+						class="w-24px h-24px"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+						<path d="M3 3v5h5" />
+						<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+						<path d="M16 16h5v5" />
+					</svg>
+				</button>
 			</div>
 		</header>
 
