@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { NEmpty, NSkeleton, NCollapse, NCollapseItem, NTag } from 'naive-ui'
+import { NEmpty, NSkeleton } from 'naive-ui'
 import { useSessionHistory } from '../composables/useSessionHistory'
-import SessionCard from './SessionCard.vue'
+import ProjectCard from './ProjectCard.vue'
 import SessionDetail from './SessionDetail.vue'
 
 const emit = defineEmits<{
@@ -13,6 +13,7 @@ const emit = defineEmits<{
 const {
 	sessions,
 	currentMessages,
+	notes,
 	loading,
 	error,
 	selectedSessionId,
@@ -21,8 +22,7 @@ const {
 	loadSessions,
 	loadSession,
 	saveNote,
-	clearSession,
-	getNote
+	clearSession
 } = useSessionHistory()
 
 watch(selectedSessionId, newVal => {
@@ -39,13 +39,13 @@ const groupedSessions = computed(() => {
 	return Object.entries(groups)
 })
 
-const collapseValue = ref<string[]>([])
+const expandedProjects = ref<string[]>([])
 
 watch(
 	groupedSessions,
 	newGroups => {
-		if (collapseValue.value.length === 0 && newGroups.length > 0) {
-			collapseValue.value = newGroups.map(([path]) => path)
+		if (expandedProjects.value.length === 0 && newGroups.length > 0) {
+			expandedProjects.value = newGroups.map(([path]) => path)
 		}
 	},
 	{ immediate: true }
@@ -74,6 +74,15 @@ function handleRefresh() {
 
 function handleNoteSave(sessionId: string, note: string) {
 	saveNote(sessionId, note)
+}
+
+function toggleProject(projectPath: string) {
+	const idx = expandedProjects.value.indexOf(projectPath)
+	if (idx >= 0) {
+		expandedProjects.value.splice(idx, 1)
+	} else {
+		expandedProjects.value.push(projectPath)
+	}
 }
 
 // 初始加载
@@ -143,34 +152,28 @@ loadSessions()
 				</div>
 				<div v-else-if="error" class="flex flex-col items-center gap-12px py-48px">
 					<span class="text-red-500">{{ error }}</span>
-					<NButton size="small" @click="handleRefresh">重试</NButton>
+					<button
+						class="px-12px py-6px text-13px text-white bg-indigo-500 rounded-6px hover:bg-indigo-600 transition-colors"
+						@click="handleRefresh"
+					>
+						重试
+					</button>
 				</div>
 				<NEmpty v-else-if="sessions.length === 0" description="暂无会话记录" class="py-48px" />
-				<NCollapse v-else v-model:value="collapseValue">
-					<NCollapseItem
+				<div v-else class="flex flex-col gap-12px">
+					<ProjectCard
 						v-for="[projectPath, projectSessions] in groupedSessions"
 						:key="projectPath"
-						:name="projectPath"
-					>
-						<template #header>
-							<div class="flex items-center gap-8px">
-								<span class="text-14px font-600">{{ projectPath }}</span>
-								<NTag size="small" :bordered="false" type="info">
-									{{ projectSessions.length }}
-								</NTag>
-							</div>
-						</template>
-						<div class="flex flex-col gap-8px">
-							<SessionCard
-								v-for="session in projectSessions"
-								:key="session.session_id"
-								:session="session"
-								:note="getNote(session.session_id)"
-								@click="handleCardClick"
-							/>
-						</div>
-					</NCollapseItem>
-				</NCollapse>
+						:project-name="projectPath"
+						:project-path="projectPath"
+						:session-count="projectSessions.length"
+						:sessions="projectSessions"
+						:notes="notes"
+						:expanded="expandedProjects.includes(projectPath)"
+						@toggle="toggleProject(projectPath)"
+						@session-click="handleCardClick"
+					/>
+				</div>
 			</main>
 		</template>
 
