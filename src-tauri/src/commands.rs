@@ -509,8 +509,7 @@ pub fn load_annotations() -> Result<std::collections::HashMap<String, String>, S
         return Ok(std::collections::HashMap::new());
     }
     let content = fs::read_to_string(&path).map_err(|e| format!("读取 annotations.json 失败: {e}"))?;
-    let store: NoteStore =
-        serde_json::from_str(&content).map_err(|e| format!("解析 annotations.json 失败: {e}"))?;
+    let store: NoteStore = serde_json::from_str(&content).map_err(|e| format!("解析 annotations.json 失败: {e}"))?;
     Ok(store.notes)
 }
 
@@ -521,8 +520,7 @@ pub fn save_annotation(session_id: String, note: String) -> Result<(), String> {
 
     // 读取现有备注
     let mut notes: std::collections::HashMap<String, String> = if path.exists() {
-        let content =
-            fs::read_to_string(&path).map_err(|e| format!("读取 annotations.json 失败: {e}"))?;
+        let content = fs::read_to_string(&path).map_err(|e| format!("读取 annotations.json 失败: {e}"))?;
         let store: NoteStore =
             serde_json::from_str(&content).map_err(|e| format!("解析 annotations.json 失败: {e}"))?;
         store.notes
@@ -532,8 +530,7 @@ pub fn save_annotation(session_id: String, note: String) -> Result<(), String> {
 
     notes.insert(session_id, note);
     let store = NoteStore { notes };
-    let serialized =
-        serde_json::to_string_pretty(&store).map_err(|e| format!("序列化失败: {e}"))?;
+    let serialized = serde_json::to_string_pretty(&store).map_err(|e| format!("序列化失败: {e}"))?;
 
     // 原子写入: .tmp → rename
     let tmp_path = path.with_extension("json.tmp");
@@ -834,7 +831,10 @@ mod tests {
     #[test]
     fn message_role_serde() {
         assert_eq!(serde_json::to_string(&MessageRole::User).unwrap(), r#""user""#);
-        assert_eq!(serde_json::to_string(&MessageRole::Assistant).unwrap(), r#""assistant""#);
+        assert_eq!(
+            serde_json::to_string(&MessageRole::Assistant).unwrap(),
+            r#""assistant""#
+        );
         assert_eq!(serde_json::to_string(&MessageRole::System).unwrap(), r#""system""#);
     }
 

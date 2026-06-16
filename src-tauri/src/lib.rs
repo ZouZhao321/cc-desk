@@ -1,6 +1,9 @@
 mod commands;
 
-use commands::{get_settings_path, get_session_last_message, list_sessions, load_annotations, read_model_config, read_session, save_annotation, write_model_config};
+use commands::{
+    get_session_last_message, get_settings_path, list_sessions, load_annotations, read_model_config, read_session,
+    save_annotation, write_model_config,
+};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
