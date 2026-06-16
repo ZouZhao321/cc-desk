@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { NEmpty, NSkeleton } from 'naive-ui'
+import { ArrowLeft, RefreshCw } from '@lucide/vue'
 import { useSessionHistory } from '../composables/useSessionHistory'
 import ProjectCard from './ProjectCard.vue'
 import SessionDetail from './SessionDetail.vue'
@@ -97,17 +98,7 @@ loadSessions()
 					class="flex items-center justify-center w-24px h-24px text-[#666666] hover:text-gray-800 transition-colors"
 					@click="emit('back')"
 				>
-					<svg
-						class="w-24px h-24px"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="m15 18-6-6 6-6" />
-					</svg>
+					<ArrowLeft :size="24" />
 				</button>
 				<span class="text-20px font-bold text-[#111827]">会话管理</span>
 				<div class="flex-1"></div>
@@ -115,20 +106,7 @@ loadSessions()
 					class="flex items-center justify-center w-24px h-24px text-[#000000] hover:text-gray-600 transition-colors"
 					@click="handleRefresh"
 				>
-					<svg
-						class="w-24px h-24px"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-						<path d="M3 3v5h5" />
-						<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-						<path d="M16 16h5v5" />
-					</svg>
+					<RefreshCw :size="24" />
 				</button>
 			</div>
 		</header>

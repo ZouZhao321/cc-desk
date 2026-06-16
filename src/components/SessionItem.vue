@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MessageSquare } from '@lucide/vue'
 import type { SessionMeta } from '../types'
 
 defineProps<{
@@ -45,31 +46,11 @@ function truncate(text: string, maxLen: number): string {
 			</div>
 		</div>
 		<div v-if="note" class="flex items-center gap-6px px-10px py-6px rounded-6px bg-[#EEF2FF]">
-			<svg
-				class="w-12px h-12px text-[#6366F1] shrink-0"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-			</svg>
+			<MessageSquare class="w-12px h-12px text-[#6366F1] shrink-0" :size="12" />
 			<span class="text-12px text-[#6366F1] truncate">{{ note }}</span>
 		</div>
 		<div v-else class="flex items-center gap-6px px-10px py-6px rounded-6px bg-[#F3F4F6]">
-			<svg
-				class="w-12px h-12px text-[#94A3B8] shrink-0"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-			</svg>
+			<MessageSquare class="w-12px h-12px text-[#94A3B8] shrink-0" :size="12" />
 			<span class="text-12px text-[#94A3B8]">未添加备注</span>
 		</div>
 	</div>
