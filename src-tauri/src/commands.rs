@@ -422,6 +422,71 @@ pub fn read_session(session_id: String) -> Result<Vec<Message>, String> {
     Err(format!("未找到会话: {}", session_id))
 }
 
+/// 获取会话的最后一条用户消息
+#[command]
+pub fn get_session_last_message(session_id: String) -> Result<Option<String>, String> {
+    let home = dirs::home_dir().ok_or_else(|| "无法确定用户主目录".to_string())?;
+    let projects_dir = home.join(".claude").join("projects");
+
+    let entries = fs::read_dir(&projects_dir).map_err(|e| format!("读取 projects 目录失败: {e}"))?;
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+
+        let jsonl_path = path.join(format!("{}.jsonl", session_id));
+        if !jsonl_path.exists() {
+            continue;
+        }
+
+        let file = fs::File::open(&jsonl_path).map_err(|e| format!("打开 JSONL 文件失败: {e}"))?;
+        let reader = BufReader::new(file);
+
+        let mut last_user_message: Option<String> = None;
+
+        for line in reader.lines().map_while(Result::ok) {
+            if line.trim().is_empty() {
+                continue;
+            }
+
+            if let Ok(json) = serde_json::from_str::<serde_json::Value>(&line) {
+                let msg_type = json.get("type").and_then(|t| t.as_str()).unwrap_or("");
+                if msg_type == "user" {
+                    if let Some(text) = extract_last_message_text(&json) {
+                        last_user_message = Some(text);
+                    }
+                }
+            }
+        }
+
+        return Ok(last_user_message);
+    }
+
+    Ok(None)
+}
+
+/// 从用户消息 JSON 中提取消息文本
+fn extract_last_message_text(json: &serde_json::Value) -> Option<String> {
+    let message = json.get("message")?;
+    let content = message.get("content")?;
+
+    if let Some(arr) = content.as_array() {
+        for item in arr {
+            if let Some(block_type) = item.get("type").and_then(|t| t.as_str()) {
+                if block_type == "text" {
+                    return item.get("text").and_then(|t| t.as_str()).map(|s| s.to_string());
+                }
+            }
+        }
+    } else if let Some(text) = content.as_str() {
+        return Some(text.to_string());
+    }
+
+    None
+}
+
 /// 笔记存储数据
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct NoteStore {

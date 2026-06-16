@@ -5,6 +5,7 @@ import type { SessionMeta } from '../types'
 defineProps<{
 	session: SessionMeta
 	note: string
+	lastMessage: string
 }>()
 
 defineEmits<{
@@ -41,7 +42,7 @@ function truncate(text: string, maxLen: number): string {
 				<span class="text-12px text-[#64748B]">{{ session.message_count }} messages</span>
 				<span class="text-12px text-[#94A3B8]">&middot;</span>
 				<span class="text-11px text-[#94A3B8] truncate"
-					>最后消息: {{ truncate(note || '未添加备注', 40) }}</span
+					>最后消息: {{ truncate(lastMessage || '暂无消息', 40) }}</span
 				>
 			</div>
 		</div>

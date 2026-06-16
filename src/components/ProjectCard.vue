@@ -9,6 +9,7 @@ defineProps<{
 	sessionCount: number
 	sessions: SessionMeta[]
 	notes: Record<string, string>
+	lastMessages: Record<string, string>
 	expanded: boolean
 }>()
 
@@ -53,6 +54,7 @@ function truncatePathMiddle(path: string, maxLen = 40): string {
 				:key="session.session_id"
 				:session="session"
 				:note="notes[session.session_id] || ''"
+				:last-message="lastMessages[session.session_id] || ''"
 				@click="$emit('session-click', $event)"
 			/>
 		</div>

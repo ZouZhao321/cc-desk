@@ -15,6 +15,7 @@ const {
 	sessions,
 	currentMessages,
 	notes,
+	lastMessages,
 	loading,
 	error,
 	selectedSessionId,
@@ -146,6 +147,7 @@ loadSessions()
 						:session-count="projectSessions.length"
 						:sessions="projectSessions"
 						:notes="notes"
+						:last-messages="lastMessages"
 						:expanded="expandedProjects.includes(projectPath)"
 						@toggle="toggleProject(projectPath)"
 						@session-click="handleCardClick"

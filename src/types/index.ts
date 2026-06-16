@@ -70,6 +70,7 @@ export interface SessionMeta {
 	started_at: string | null
 	message_count: number
 	version: string | null
+	last_message?: string
 }
 
 /** 消息角色 */

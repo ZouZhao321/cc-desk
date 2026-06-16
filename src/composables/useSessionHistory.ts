@@ -6,6 +6,7 @@ export function useSessionHistory() {
 	const sessions = ref<SessionMeta[]>([])
 	const currentMessages = ref<Message[]>([])
 	const notes = ref<Record<string, string>>({})
+	const lastMessages = ref<Record<string, string>>({})
 	const loading = ref(false)
 	const error = ref<string | null>(null)
 	const selectedSessionId = ref<string | null>(null)
@@ -30,6 +31,21 @@ export function useSessionHistory() {
 			])
 			sessions.value = sessionList
 			notes.value = noteData
+
+			// 加载所有会话的最后消息
+			const lastMessagePromises = sessionList.map(async session => {
+				try {
+					const lastMsg = await invoke<string | null>('get_session_last_message', {
+						sessionId: session.session_id
+					})
+					if (lastMsg) {
+						lastMessages.value[session.session_id] = lastMsg
+					}
+				} catch {
+					// 忽略单个会话的加载错误
+				}
+			})
+			await Promise.all(lastMessagePromises)
 		} catch (e) {
 			error.value = String(e)
 		} finally {
@@ -69,10 +85,15 @@ export function useSessionHistory() {
 		return notes.value[sessionId] ?? ''
 	}
 
+	function getLastMessage(sessionId: string): string {
+		return lastMessages.value[sessionId] ?? ''
+	}
+
 	return {
 		sessions,
 		currentMessages,
 		notes,
+		lastMessages,
 		loading,
 		error,
 		selectedSessionId,
@@ -82,6 +103,7 @@ export function useSessionHistory() {
 		loadSession,
 		saveNote,
 		clearSession,
-		getNote
+		getNote,
+		getLastMessage
 	}
 }
