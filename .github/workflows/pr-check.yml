@@ -63,7 +63,6 @@ jobs:
             - uses: Swatinem/rust-cache@v2
               with:
                   workspaces: src-tauri -> target
-                  sccache: true
 
             - name: Clippy
               run: pnpm lint:rs
@@ -100,7 +99,6 @@ jobs:
             - uses: Swatinem/rust-cache@v2
               with:
                   workspaces: src-tauri -> target
-                  sccache: true
 
             - name: Get pnpm store directory
               shell: bash
