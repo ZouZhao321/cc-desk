@@ -42,16 +42,6 @@ const groupedSessions = computed(() => {
 
 const expandedProjects = ref<string[]>([])
 
-watch(
-	groupedSessions,
-	newGroups => {
-		if (expandedProjects.value.length === 0 && newGroups.length > 0) {
-			expandedProjects.value = newGroups.map(([path]) => path)
-		}
-	},
-	{ immediate: true }
-)
-
 const noteInputValue = computed({
 	get: () => currentNote.value,
 	set: (val: string) => {
@@ -69,8 +59,13 @@ function handleBack() {
 	clearSession()
 }
 
-function handleRefresh() {
-	loadSessions()
+const refreshing = ref(false)
+
+async function handleRefresh() {
+	refreshing.value = true
+	expandedProjects.value = []
+	await loadSessions()
+	refreshing.value = false
 }
 
 function handleNoteSave(sessionId: string, note: string) {
@@ -95,7 +90,7 @@ loadSessions()
 		<header v-if="!selectedSessionId" class="flex items-center h-56px px-24px bg-white shrink-0">
 			<div class="flex items-center gap-20px">
 				<button
-					class="flex items-center justify-center w-24px h-24px text-[#666666] hover:text-gray-800 transition-colors"
+					class="flex items-center justify-center w-36px h-36px shrink-0 text-[#666666] hover:text-gray-800 hover:bg-[#E2E8F0] active:bg-[#CBD5E1] rounded-8px transition-all duration-150 cursor-pointer"
 					@click="emit('back')"
 				>
 					<ArrowLeft :size="24" />
@@ -103,24 +98,28 @@ loadSessions()
 				<span class="text-20px font-bold text-[#111827]">会话管理</span>
 				<div class="flex-1"></div>
 				<button
-					class="flex items-center justify-center w-24px h-24px text-[#000000] hover:text-gray-600 transition-colors"
+					class="flex items-center justify-center w-36px h-36px shrink-0 text-[#000000] hover:text-gray-600 hover:bg-[#E2E8F0] active:bg-[#CBD5E1] rounded-8px transition-all duration-150 cursor-pointer"
 					@click="handleRefresh"
 				>
-					<RefreshCw :size="24" />
+					<RefreshCw
+						:size="24"
+						class="transition-transform duration-500"
+						:class="{ 'animate-spin': refreshing }"
+					/>
 				</button>
 			</div>
 		</header>
 
 		<!-- 列表视图 -->
 		<template v-if="!selectedSessionId">
-			<main class="flex-1 py-16px px-24px bg-[#F8F9FA] overflow-y-auto">
+			<main class="flex-1 py-20px px-24px bg-[#F8FAFC] overflow-y-auto">
 				<div v-if="loading && sessions.length === 0" class="flex flex-col gap-16px py-16px">
 					<div v-for="g in 3" :key="g" class="flex flex-col gap-8px">
 						<NSkeleton :width="200 + g * 40" :height="20" :border-radius="6" />
 						<div
 							v-for="c in 2 + g"
 							:key="c"
-							class="flex items-center gap-12px p-12px_18px bg-white rounded-10px border border-gray-200"
+							class="flex items-center gap-12px p-12px_18px bg-white rounded-10px"
 						>
 							<NSkeleton :width="140" :height="14" :border-radius="4" />
 							<NSkeleton class="flex-1" :height="14" :border-radius="4" />
