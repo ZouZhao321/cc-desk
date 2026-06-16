@@ -26,6 +26,7 @@ function extractProjectDir(fullPath: string): string {
 	<div class="flex flex-col rounded-12px overflow-hidden" style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06)">
 		<button
 			class="flex items-center justify-between w-full px-20px py-14px bg-[#F1F5F9] cursor-pointer hover:bg-[#E2E8F0] transition-colors"
+			style="border-radius: 12px 12px 0 0"
 			@click="$emit('toggle')"
 		>
 			<div class="flex items-center gap-10px">
