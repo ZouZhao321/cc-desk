@@ -116,6 +116,7 @@ jobs:
             - run: pnpm install --frozen-lockfile
 
             - name: Build Tauri app
+              shell: bash
               run: |
                   if [ "$RUNNER_OS" = "Linux" ]; then
                     xvfb-run --auto-servernum pnpm tauri build
