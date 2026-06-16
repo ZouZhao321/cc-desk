@@ -30,11 +30,11 @@ function truncate(text: string, maxLen: number): string {
 
 <template>
 	<div
-		class="flex flex-col gap-8px p-12px_16px bg-white rounded-8px border border-[#E2E8F0] cursor-pointer hover:border-[#6366F1] transition-colors"
+		class="flex flex-col gap-8px p-12px_16px bg-white rounded-8px border border-[#E2E8F0] cursor-pointer"
 		style="box-shadow: 0 1px 3px rgba(0, 0, 0, 0.031)"
 		@click="$emit('click', session.session_id)"
 	>
-		<div class="flex items-center justify-between gap-8px">
+		<div class="flex items-center justify-between gap-8px px-10px pt-4px">
 			<div class="flex items-center gap-6px">
 				<span class="text-13px font-500 text-[#1E293B]">{{ formatDate(session.started_at) }}</span>
 				<span class="text-12px text-[#94A3B8]">&middot;</span>
