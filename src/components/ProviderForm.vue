@@ -1,0 +1,228 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { NInput, NSelect, NButton, NAlert } from 'naive-ui'
+import type { Provider } from '../types'
+
+const props = defineProps<{
+	provider?: Provider | null
+}>()
+
+const emit = defineEmits<{
+	save: [provider: Omit<Provider, 'id' | 'is_active'>]
+	cancel: []
+	test: [api_key: string, base_url: string]
+}>()
+
+const form = ref({
+	name: '',
+	notes: '',
+	website: '',
+	api_key: '',
+	base_url: '',
+	main_model: 'sonnet',
+	opus_model: '',
+	sonnet_model: '',
+	haiku_model: '',
+	sub_agent_model: 'haiku',
+	reasoning_level: 'max'
+})
+
+const testing = ref(false)
+const testResult = ref<{ success: boolean; message: string } | null>(null)
+
+const modelOptions = [
+	{ label: 'Haiku', value: 'haiku' },
+	{ label: 'Sonnet', value: 'sonnet' },
+	{ label: 'Opus', value: 'opus' }
+]
+
+const reasoningOptions = [
+	{ label: 'Low', value: 'low' },
+	{ label: 'Medium', value: 'medium' },
+	{ label: 'High', value: 'high' },
+	{ label: 'Max', value: 'max' },
+	{ label: 'XHigh', value: 'xhigh' }
+]
+
+watch(
+	() => props.provider,
+	p => {
+		if (p) {
+			form.value = {
+				name: p.name,
+				notes: p.notes || '',
+				website: p.website || '',
+				api_key: p.api_key,
+				base_url: p.base_url,
+				main_model: p.main_model,
+				opus_model: p.opus_model,
+				sonnet_model: p.sonnet_model,
+				haiku_model: p.haiku_model,
+				sub_agent_model: p.sub_agent_model,
+				reasoning_level: p.reasoning_level
+			}
+		}
+	},
+	{ immediate: true }
+)
+
+function handleSave() {
+	if (!form.value.name || !form.value.api_key || !form.value.base_url) return
+	emit('save', { ...form.value })
+}
+
+async function handleTest() {
+	if (!form.value.api_key || !form.value.base_url) return
+	testing.value = true
+	testResult.value = null
+	emit('test', form.value.api_key, form.value.base_url)
+	testing.value = false
+}
+</script>
+
+<template>
+	<div class="flex flex-col w-full h-full bg-white font-sans">
+		<!-- 头部 -->
+		<header class="flex items-center justify-between h-56px px-24px bg-white border-b border-gray-100 shrink-0">
+			<div class="flex items-center gap-12px">
+				<button
+					class="flex items-center justify-center w-32px h-32px border-none bg-gray-100 rounded-6px cursor-pointer hover:bg-gray-200 transition-colors"
+					@click="emit('cancel')"
+				>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="2">
+						<path d="M19 12H5M12 19l-7-7 7-7" />
+					</svg>
+				</button>
+				<span class="text-20px font-700 text-gray-900">
+					{{ provider ? '编辑供应商' : '添加供应商' }}
+				</span>
+			</div>
+			<button
+				class="text-14px text-gray-500 bg-transparent border-none cursor-pointer hover:text-gray-700"
+				@click="emit('cancel')"
+			>
+				取消
+			</button>
+		</header>
+
+		<!-- 表单内容 -->
+		<div class="flex-1 overflow-y-auto px-32px py-24px">
+			<div class="max-w-640px mx-auto flex flex-col gap-24px">
+				<!-- 基本信息 -->
+				<section class="flex flex-col gap-16px">
+					<h3 class="text-16px font-600 text-gray-900 m-0">基本信息</h3>
+
+					<div class="flex flex-col gap-6px">
+						<label class="text-13px text-gray-600">供应商名称</label>
+						<n-input v-model:value="form.name" placeholder="例如：DeepSeek" />
+					</div>
+
+					<div class="flex flex-col gap-6px">
+						<label class="text-13px text-gray-600">备注</label>
+						<n-input v-model:value="form.notes" placeholder="可选备注信息" />
+					</div>
+
+					<div class="flex flex-col gap-6px">
+						<label class="text-13px text-gray-600">官网链接</label>
+						<n-input v-model:value="form.website" placeholder="https://platform.example.com" />
+					</div>
+				</section>
+
+				<!-- API 配置 -->
+				<section class="flex flex-col gap-16px">
+					<h3 class="text-16px font-600 text-gray-900 m-0">API 配置</h3>
+
+					<div class="flex flex-col gap-6px">
+						<label class="text-13px text-gray-600">API Key</label>
+						<n-input
+							v-model:value="form.api_key"
+							type="password"
+							show-password-on="click"
+							placeholder="sk-xxxxxxxxxxxxxxxx"
+						/>
+					</div>
+
+					<div class="flex flex-col gap-6px">
+						<label class="text-13px text-gray-600">请求地址</label>
+						<n-input v-model:value="form.base_url" placeholder="https://api.example.com/anthropic" />
+					</div>
+				</section>
+
+				<!-- 模型配置 -->
+				<section class="flex flex-col gap-16px">
+					<div>
+						<h3 class="text-16px font-600 text-gray-900 m-0">模型配置</h3>
+						<p class="text-13px text-gray-500 m-0 mt-4px">配置不同场景使用的模型</p>
+					</div>
+
+					<div class="grid grid-cols-2 gap-16px">
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">主模型</label>
+							<n-select v-model:value="form.main_model" :options="modelOptions" />
+						</div>
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">Opus 模型</label>
+							<n-input v-model:value="form.opus_model" placeholder="模型 ID" />
+						</div>
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">Sonnet 模型</label>
+							<n-input v-model:value="form.sonnet_model" placeholder="模型 ID" />
+						</div>
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">Haiku 模型</label>
+							<n-input v-model:value="form.haiku_model" placeholder="模型 ID" />
+						</div>
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">子代理模型</label>
+							<n-select v-model:value="form.sub_agent_model" :options="modelOptions" />
+						</div>
+						<div class="flex flex-col gap-6px">
+							<label class="text-13px text-gray-600">推理强度</label>
+							<n-select v-model:value="form.reasoning_level" :options="reasoningOptions" />
+						</div>
+					</div>
+				</section>
+
+				<!-- 测试结果提示 -->
+				<n-alert v-if="testResult" :type="testResult.success ? 'success' : 'error'" class="mt-8px">
+					{{ testResult.message }}
+				</n-alert>
+
+				<!-- 操作栏 -->
+				<div class="flex items-center justify-end gap-12px py-16px border-t border-gray-100">
+					<n-button :loading="testing" @click="handleTest">
+						<template #icon>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+								<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+							</svg>
+						</template>
+						测试连接
+					</n-button>
+					<n-button type="primary" @click="handleSave">
+						<template #icon>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<polyline points="20 6 9 17 4 12" />
+							</svg>
+						</template>
+						保存配置
+					</n-button>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
