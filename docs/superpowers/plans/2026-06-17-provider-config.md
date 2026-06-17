@@ -10,6 +10,27 @@
 
 ---
 
+## 提交前检查清单（每次 git commit 前必须执行）
+
+```bash
+# 1. 格式化
+pnpm format          # Prettier 格式化前端代码
+pnpm format:rs       # cargo fmt 格式化 Rust 代码
+
+# 2. 类型检查
+pnpm build           # vue-tsc --noEmit && vite build（包含类型检查）
+
+# 3. Lint 检查
+pnpm lint            # ESLint 检查前端代码
+pnpm lint:rs         # cargo clippy 检查 Rust 代码
+
+# 4. 单元测试
+pnpm test            # vitest 运行前端测试
+pnpm test:rs         # cargo test 运行 Rust 测试
+```
+
+所有检查通过后才能提交。git hooks（husky + lint-staged）会自动对暂存文件执行 eslint --fix、prettier --write、rustfmt。
+
 ## 文件结构
 
 | 文件 | 操作 | 职责 |
@@ -295,10 +316,15 @@ Expected: 编译成功，无错误
 
 - [ ] **Step 9: 运行测试**
 
-Run: `cd src-tauri && cargo test`
+Run: `pnpm test:rs`
 Expected: 所有测试通过
 
-- [ ] **Step 10: Commit**
+- [ ] **Step 10: 提交前检查**
+
+Run: `pnpm format:rs && pnpm lint:rs && pnpm test:rs`
+Expected: 全部通过
+
+- [ ] **Step 11: Commit**
 
 ```bash
 git add src-tauri/src/commands.rs src-tauri/src/lib.rs
@@ -393,10 +419,15 @@ use commands::{
 
 - [ ] **Step 3: 编译验证**
 
-Run: `cd src-tauri && cargo check`
-Expected: 编译成功
+Run: `pnpm lint:rs`
+Expected: 编译成功，无警告
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: 提交前检查**
+
+Run: `pnpm format:rs && pnpm lint:rs && pnpm test:rs`
+Expected: 全部通过
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add src-tauri/src/commands.rs src-tauri/src/lib.rs
@@ -477,10 +508,15 @@ use commands::{
 
 - [ ] **Step 4: 编译验证**
 
-Run: `cd src-tauri && cargo check`
-Expected: 编译成功
+Run: `pnpm lint:rs`
+Expected: 编译成功，无警告
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: 提交前检查**
+
+Run: `pnpm format:rs && pnpm lint:rs && pnpm test:rs`
+Expected: 全部通过
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src-tauri/Cargo.toml src-tauri/src/commands.rs src-tauri/src/lib.rs
@@ -522,7 +558,12 @@ export interface ProviderStore {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: 提交前检查**
+
+Run: `pnpm format && pnpm lint && pnpm test`
+Expected: 全部通过
+
+- [ ] **Step 3: Commit**
 
 ```bash
 git add src/types/index.ts
@@ -644,7 +685,12 @@ export function useProviders() {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: 提交前检查**
+
+Run: `pnpm format && pnpm lint && pnpm test`
+Expected: 全部通过
+
+- [ ] **Step 3: Commit**
 
 ```bash
 git add src/composables/useProviders.ts
@@ -775,7 +821,12 @@ defineEmits<{
 </template>
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: 提交前检查**
+
+Run: `pnpm format && pnpm lint && pnpm test`
+Expected: 全部通过
+
+- [ ] **Step 3: Commit**
 
 ```bash
 git add src/components/ProviderCard.vue
@@ -1003,7 +1054,12 @@ async function handleTest() {
 </template>
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: 提交前检查**
+
+Run: `pnpm format && pnpm lint && pnpm test`
+Expected: 全部通过
+
+- [ ] **Step 3: Commit**
 
 ```bash
 git add src/components/ProviderForm.vue
@@ -1242,15 +1298,20 @@ defineEmits<{
 
 - [ ] **Step 3: 编译验证**
 
-Run: `pnpm type-check`
-Expected: 无类型错误
+Run: `pnpm build`
+Expected: 构建成功，无类型错误
 
-- [ ] **Step 4: 运行开发服务器验证**
+- [ ] **Step 4: 提交前检查**
+
+Run: `pnpm format && pnpm lint && pnpm test`
+Expected: 全部通过
+
+- [ ] **Step 5: 运行开发服务器验证**
 
 Run: `pnpm dev`
 Expected: 应用正常启动，显示供应商列表页面
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/App.vue src/components/ConfigListMain.vue
@@ -1264,24 +1325,34 @@ git commit -m "feat: 重构 App.vue 和 ConfigListMain，集成供应商管理"
 **Files:**
 - Modify: `src/App.vue` (如有编译问题则修复)
 
-- [ ] **Step 1: 运行完整构建**
+- [ ] **Step 1: 格式化所有代码**
+
+Run: `pnpm format && pnpm format:rs`
+Expected: 格式化完成
+
+- [ ] **Step 2: 类型检查和构建**
 
 Run: `pnpm build`
 Expected: 构建成功
 
-- [ ] **Step 2: 运行 Rust lint**
+- [ ] **Step 3: Lint 检查**
 
-Run: `pnpm lint:rs`
-Expected: 无警告
+Run: `pnpm lint && pnpm lint:rs`
+Expected: 无错误，无警告
 
-- [ ] **Step 3: 运行前端 lint**
+- [ ] **Step 4: 单元测试**
 
-Run: `pnpm lint`
-Expected: 无错误
+Run: `pnpm test && pnpm test:rs`
+Expected: 所有测试通过
 
-- [ ] **Step 4: 修复编译问题（如有）**
+- [ ] **Step 5: 运行开发服务器验证**
 
-如果 `pnpm build` 报错，修复后提交：
+Run: `pnpm dev`
+Expected: 应用正常启动，功能可用
+
+- [ ] **Step 6: 修复问题（如有）**
+
+如果任何检查失败，修复后提交：
 
 ```bash
 git add -A
