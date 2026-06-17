@@ -2,9 +2,11 @@
 import { ref, watch } from 'vue'
 import { NInput, NSelect, NAlert } from 'naive-ui'
 import type { Provider } from '../types'
+import type { ParsedConfig } from '../utils/parseConfig'
 
 const props = defineProps<{
 	provider?: Provider | null
+	initialData?: ParsedConfig | null
 }>()
 
 const emit = defineEmits<{
@@ -44,24 +46,34 @@ const reasoningOptions = [
 	{ label: 'XHigh', value: 'xhigh' }
 ]
 
+function populateForm(data: Omit<Provider, 'id' | 'is_active'>) {
+	form.value = {
+		name: data.name || '',
+		notes: data.notes || '',
+		website: data.website || '',
+		api_key: data.api_key || '',
+		base_url: data.base_url || '',
+		main_model: data.main_model || 'sonnet',
+		opus_model: data.opus_model || '',
+		sonnet_model: data.sonnet_model || '',
+		haiku_model: data.haiku_model || '',
+		sub_agent_model: data.sub_agent_model || 'haiku',
+		reasoning_level: data.reasoning_level || 'max'
+	}
+}
+
+watch(
+	() => props.initialData,
+	d => {
+		if (d) populateForm(d)
+	},
+	{ immediate: true }
+)
+
 watch(
 	() => props.provider,
 	p => {
-		if (p) {
-			form.value = {
-				name: p.name,
-				notes: p.notes || '',
-				website: p.website || '',
-				api_key: p.api_key,
-				base_url: p.base_url,
-				main_model: p.main_model,
-				opus_model: p.opus_model,
-				sonnet_model: p.sonnet_model,
-				haiku_model: p.haiku_model,
-				sub_agent_model: p.sub_agent_model,
-				reasoning_level: p.reasoning_level
-			}
-		}
+		if (p) populateForm(p)
 	},
 	{ immediate: true }
 )
