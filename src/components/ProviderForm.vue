@@ -113,27 +113,29 @@ async function handleTest() {
 					<h3 class="text-16px font-600 text-gray-900 m-0">基本信息</h3>
 
 					<div class="flex flex-col gap-6px">
-						<label class="text-13px text-gray-600">供应商名称</label>
+						<label class="text-13px text-gray-600 font-500">供应商名称</label>
 						<n-input v-model:value="form.name" placeholder="例如：DeepSeek" />
 					</div>
 
 					<div class="flex flex-col gap-6px">
-						<label class="text-13px text-gray-600">备注</label>
+						<label class="text-13px text-gray-600 font-500">备注</label>
 						<n-input v-model:value="form.notes" placeholder="可选备注信息" />
 					</div>
 
 					<div class="flex flex-col gap-6px">
-						<label class="text-13px text-gray-600">官网链接</label>
+						<label class="text-13px text-gray-600 font-500">官网链接</label>
 						<n-input v-model:value="form.website" placeholder="https://platform.example.com" />
 					</div>
 				</section>
+
+				<div class="h-1px bg-gray-200" />
 
 				<!-- API 配置 -->
 				<section class="flex flex-col gap-16px">
 					<h3 class="text-16px font-600 text-gray-900 m-0">API 配置</h3>
 
 					<div class="flex flex-col gap-6px">
-						<label class="text-13px text-gray-600">API Key</label>
+						<label class="text-13px text-gray-600 font-500">API Key</label>
 						<n-input
 							v-model:value="form.api_key"
 							type="password"
@@ -143,10 +145,12 @@ async function handleTest() {
 					</div>
 
 					<div class="flex flex-col gap-6px">
-						<label class="text-13px text-gray-600">请求地址</label>
+						<label class="text-13px text-gray-600 font-500">请求地址</label>
 						<n-input v-model:value="form.base_url" placeholder="https://api.example.com/anthropic" />
 					</div>
 				</section>
+
+				<div class="h-1px bg-gray-200" />
 
 				<!-- 模型配置 -->
 				<section class="flex flex-col gap-16px">
@@ -157,31 +161,33 @@ async function handleTest() {
 
 					<div class="grid grid-cols-2 gap-16px">
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">主模型</label>
+							<label class="text-13px text-gray-600 font-500">主模型</label>
 							<n-select v-model:value="form.main_model" :options="modelOptions" />
 						</div>
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">Opus 模型</label>
+							<label class="text-13px text-gray-600 font-500">Opus 模型</label>
 							<n-input v-model:value="form.opus_model" placeholder="模型 ID" />
 						</div>
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">Sonnet 模型</label>
+							<label class="text-13px text-gray-600 font-500">Sonnet 模型</label>
 							<n-input v-model:value="form.sonnet_model" placeholder="模型 ID" />
 						</div>
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">Haiku 模型</label>
+							<label class="text-13px text-gray-600 font-500">Haiku 模型</label>
 							<n-input v-model:value="form.haiku_model" placeholder="模型 ID" />
 						</div>
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">子代理模型</label>
+							<label class="text-13px text-gray-600 font-500">子代理模型</label>
 							<n-select v-model:value="form.sub_agent_model" :options="modelOptions" />
 						</div>
 						<div class="flex flex-col gap-6px">
-							<label class="text-13px text-gray-600">推理强度</label>
+							<label class="text-13px text-gray-600 font-500">推理强度</label>
 							<n-select v-model:value="form.reasoning_level" :options="reasoningOptions" />
 						</div>
 					</div>
 				</section>
+
+				<div class="h-1px bg-gray-200" />
 
 				<!-- 测试结果提示 -->
 				<n-alert v-if="testResult" :type="testResult.success ? 'success' : 'error'" class="mt-8px">
@@ -189,7 +195,7 @@ async function handleTest() {
 				</n-alert>
 
 				<!-- 操作栏 -->
-				<div class="flex items-center justify-end gap-12px py-16px border-t border-gray-100">
+				<div class="flex items-center justify-end gap-12px py-16px border-t border-gray-200">
 					<n-button :loading="testing" @click="handleTest">
 						<template #icon>
 							<svg
@@ -199,6 +205,8 @@ async function handleTest() {
 								fill="none"
 								stroke="currentColor"
 								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
 							>
 								<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
 								<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
@@ -215,6 +223,8 @@ async function handleTest() {
 								fill="none"
 								stroke="currentColor"
 								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
 							>
 								<polyline points="20 6 9 17 4 12" />
 							</svg>
