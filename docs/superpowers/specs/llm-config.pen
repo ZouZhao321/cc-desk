@@ -1,0 +1,1977 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "WGxyG",
+      "x": 892,
+      "y": 0,
+      "name": "Config List Main",
+      "clip": true,
+      "width": 960,
+      "height": 640,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ZMt8X",
+          "name": "Top Bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "#FFFFFF",
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "KhMON",
+              "name": "Left Section",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "dRx9G",
+                  "name": "App Title",
+                  "fill": "#FF6B35",
+                  "content": "CC-Desk",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "DgIKg",
+                  "name": "Settings Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "C3vMEb",
+                      "name": "Settings Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "settings",
+                      "library": "lucide",
+                      "fill": "#666666"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FJXF9",
+                  "name": "Sync Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "myF0S",
+                      "name": "Sync Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "#22C55E"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CozFf",
+              "name": "Right Section",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qb00d",
+                  "name": "Session Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "D2MwM",
+                      "name": "Session Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "message-square",
+                      "library": "lucide",
+                      "fill": "#666666"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n4oNlg",
+                  "name": "Template Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "cV3dL",
+                      "name": "Template Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "layout-template",
+                      "library": "lucide",
+                      "fill": "#666666"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GAMIo",
+                  "name": "Add Button",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "#FF6B35",
+                  "cornerRadius": 18,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "W3TDS",
+                      "name": "Add Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "plus",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NUCxL",
+          "name": "Main Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "#F8F9FA",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            10,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "NTPSo",
+              "name": "DeepSeek Card",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "XMBsi",
+                  "name": "Drag Handle Icon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "grip-vertical",
+                  "library": "lucide",
+                  "fill": "#D1D5DB"
+                },
+                {
+                  "type": "frame",
+                  "id": "BUh51",
+                  "name": "DeepSeek Logo",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "#EBF5FF",
+                  "cornerRadius": 20,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "m8Glj",
+                      "name": "Whale Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "fish",
+                      "library": "lucide",
+                      "fill": "#2563EB"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zO89j",
+                  "name": "DeepSeek Info",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S8hyq",
+                      "name": "DeepSeek Name",
+                      "fill": "#111827",
+                      "content": "DeepSeek",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "v6vGGn",
+                      "name": "DeepSeek URL",
+                      "fill": "#3B82F6",
+                      "content": "https://platform.deepseek.com",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "svh91",
+              "name": "Xiaomi MiMo Card",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": "#3B82F6",
+              "strokeWidth": {
+                "left": 3
+              },
+              "strokeLinecap": "square",
+              "gap": 12,
+              "padding": [
+                12,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Jaq7G",
+                  "name": "Drag Handle Icon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "grip-vertical",
+                  "library": "lucide",
+                  "fill": "#D1D5DB"
+                },
+                {
+                  "type": "frame",
+                  "id": "gKDGZ",
+                  "name": "MiMo Logo",
+                  "width": 40,
+                  "height": 40,
+                  "fill": "#F3F4F6",
+                  "cornerRadius": 20,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jg7QE",
+                      "name": "MiMo Text",
+                      "fill": "#6B7280",
+                      "content": "MiMo",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QmRNG",
+                  "name": "MiMo Info",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "n8JaE",
+                      "name": "MiMo Name",
+                      "fill": "#111827",
+                      "content": "Xiaomi MiMo",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YBU6K",
+                      "name": "MiMo URL",
+                      "fill": "#3B82F6",
+                      "content": "https://platform.xiaomimimo.com",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xkrtT",
+                  "name": "Action Buttons",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iaePK",
+                      "name": "In Use Badge",
+                      "fill": "#DCFCE7",
+                      "cornerRadius": 4,
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "j6HNnN",
+                          "name": "Check Icon",
+                          "width": 12,
+                          "height": 12,
+                          "icon": "check",
+                          "library": "lucide",
+                          "fill": "#22C55E"
+                        },
+                        {
+                          "type": "text",
+                          "id": "f2q1wt",
+                          "name": "In Use Text",
+                          "fill": "#22C55E",
+                          "content": "使用中",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Fku7A",
+                      "name": "Copy Button",
+                      "width": 28,
+                      "height": 28,
+                      "cornerRadius": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "jgYSD",
+                          "name": "Copy Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "copy",
+                          "library": "lucide",
+                          "fill": "#6B7280"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mhsxV",
+                      "name": "Edit Button",
+                      "width": 28,
+                      "height": 28,
+                      "cornerRadius": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "jTnq6",
+                          "name": "Edit Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "pencil",
+                          "library": "lucide",
+                          "fill": "#6B7280"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tEGZY",
+                      "name": "Delete Button",
+                      "width": 28,
+                      "height": 28,
+                      "cornerRadius": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "S8Am5",
+                          "name": "Delete Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "trash-2",
+                          "library": "lucide",
+                          "fill": "#6B7280"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "u9l3HV",
+      "x": 3120,
+      "y": 432,
+      "name": "Add Provider Page",
+      "clip": true,
+      "width": 960,
+      "height": 640,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Vlyye",
+          "name": "Header",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "#FFFFFF",
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "n0xoB2",
+              "name": "Left Side",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j9G4O",
+                  "name": "Back Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "H1A50R",
+                      "name": "Arrow Left Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "#666666"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "ahpRN",
+                  "name": "Page Title",
+                  "fill": "#111827",
+                  "content": "添加供应商",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "BR4Hf",
+              "name": "Cancel Button",
+              "fill": "#6B7280",
+              "content": "取消",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "WUxTk",
+      "x": 2018,
+      "y": 0,
+      "name": "Add Provider Page",
+      "clip": true,
+      "width": 960,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "GlMZ1",
+          "name": "Page Header",
+          "width": "fill_container",
+          "height": 56,
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "E0rpn",
+              "name": "Header Left",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "jrWt8",
+                  "name": "Back Button",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 6,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "o0RmO",
+                      "name": "Back Icon",
+                      "width": 24,
+                      "height": 24,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "#666666"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nbIru",
+                  "name": "Page Title",
+                  "fill": "#111827",
+                  "content": "添加供应商",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "jt4ff",
+          "name": "Separator",
+          "fill": "#E5E7EB",
+          "width": "fill_container",
+          "height": 1
+        },
+        {
+          "type": "frame",
+          "id": "WL055",
+          "name": "Form Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            32
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "PnC0m",
+              "name": "Basic Info Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eU3Ad",
+                  "name": "Section Title",
+                  "fill": "#111827",
+                  "content": "基本信息",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "U5Dcel",
+                  "name": "供应商名称 Field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pSUXs",
+                      "name": "供应商名称 Label",
+                      "fill": "#374151",
+                      "content": "供应商名称",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GvasL",
+                      "name": "供应商名称 Input",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "cornerRadius": 8,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kd2yM",
+                          "name": "供应商名称 Placeholder",
+                          "fill": "#9CA3AF",
+                          "content": "例如: DeepSeek",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZJ1tj",
+                  "name": "备注 Field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DfCSM",
+                      "name": "备注 Label",
+                      "fill": "#374151",
+                      "content": "备注",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n6B2Q",
+                      "name": "备注 Input",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "cornerRadius": 8,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A22016",
+                          "name": "备注 Placeholder",
+                          "fill": "#9CA3AF",
+                          "content": "可选备注信息",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "j5W3Y",
+                  "name": "官网链接 Field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Oru0i",
+                      "name": "官网链接 Label",
+                      "fill": "#374151",
+                      "content": "官网链接",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GjdJL",
+                      "name": "官网链接 Input",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "cornerRadius": 8,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g6kPl0",
+                          "name": "官网链接 Placeholder",
+                          "fill": "#9CA3AF",
+                          "content": "https://platform.example.com",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "w3YjEs",
+              "name": "Separator",
+              "fill": "#E5E7EB",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "NOCia",
+              "name": "API Config Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T6aOgV",
+                  "name": "Section Title",
+                  "fill": "#111827",
+                  "content": "API 配置",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "YGRQh",
+                  "name": "API Key Field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iKSmE",
+                      "name": "API Key Label",
+                      "fill": "#374151",
+                      "content": "API Key",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NgkmC",
+                      "name": "API Key Input",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "cornerRadius": 8,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GEA9h",
+                          "name": "API Key Placeholder",
+                          "fill": "#9CA3AF",
+                          "content": "sk-xxxxxxxxxxxxxxxx",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kfDdS",
+                  "name": "请求地址 Field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hezJV",
+                      "name": "请求地址 Label",
+                      "fill": "#374151",
+                      "content": "请求地址",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IoUk2",
+                      "name": "请求地址 Input",
+                      "width": "fill_container",
+                      "height": 40,
+                      "fill": "#F9FAFB",
+                      "cornerRadius": 8,
+                      "stroke": "#E5E7EB",
+                      "strokeWidth": 1,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UYeQW",
+                          "name": "请求地址 Placeholder",
+                          "fill": "#9CA3AF",
+                          "content": "https://api.deepseek.com/anthropic",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "otWdi",
+              "name": "Separator",
+              "fill": "#E5E7EB",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "JNczU",
+              "name": "Model Config Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "LUeiB",
+                  "name": "Section Title",
+                  "fill": "#111827",
+                  "content": "模型配置",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "v9MsFU",
+                  "name": "Section Subtitle",
+                  "fill": "#6B7280",
+                  "content": "配置不同场景使用的模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "xxXOK",
+                  "name": "Model Row 1",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "G2Ud1",
+                      "name": "主模型 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jD7wB",
+                          "name": "主模型 Label",
+                          "fill": "#374151",
+                          "content": "主模型",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "s5sh7",
+                          "name": "主模型 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "RG8zj",
+                              "name": "主模型 Placeholder",
+                              "fill": "#9CA3AF",
+                              "content": "deepseek-v4-pro",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "iLNjt",
+                      "name": "Opus 模型 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CRXfA",
+                          "name": "Opus 模型 Label",
+                          "fill": "#374151",
+                          "content": "Opus 模型",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "B24ak",
+                          "name": "Opus 模型 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "fFiXE",
+                              "name": "Opus 模型 Placeholder",
+                              "fill": "#9CA3AF",
+                              "content": "deepseek-v4-pro",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ce0LI",
+                  "name": "Model Row 2",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "E0BMTQ",
+                      "name": "Sonnet 模型 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vWNGB",
+                          "name": "Sonnet 模型 Label",
+                          "fill": "#374151",
+                          "content": "Sonnet 模型",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "rT6y7",
+                          "name": "Sonnet 模型 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TpJ3C",
+                              "name": "Sonnet 模型 Placeholder",
+                              "fill": "#9CA3AF",
+                              "content": "deepseek-v4-pro",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yjCSb",
+                      "name": "Haiku 模型 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "o4Kk9P",
+                          "name": "Haiku 模型 Label",
+                          "fill": "#374151",
+                          "content": "Haiku 模型",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qTnZn",
+                          "name": "Haiku 模型 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "r3vo7o",
+                              "name": "Haiku 模型 Placeholder",
+                              "fill": "#9CA3AF",
+                              "content": "deepseek-v4-flash",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tftbH",
+                  "name": "Model Row 3",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "PBKV4",
+                      "name": "子代理模型 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EMYc3",
+                          "name": "子代理模型 Label",
+                          "fill": "#374151",
+                          "content": "子代理模型",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TYlZ2",
+                          "name": "子代理模型 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UUWEC",
+                              "name": "子代理模型 Placeholder",
+                              "fill": "#9CA3AF",
+                              "content": "deepseek-v4-flash",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j6gnqA",
+                      "name": "推理强度 Field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "v1qXxQ",
+                          "name": "推理强度 Label",
+                          "fill": "#374151",
+                          "content": "推理强度",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LikMv",
+                          "name": "推理强度 Input",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F9FAFB",
+                          "cornerRadius": 8,
+                          "stroke": "#E5E7EB",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "r0brK",
+                              "name": "推理强度 Value",
+                              "fill": "#111827",
+                              "content": "max",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "NOySe",
+                              "name": "Dropdown Icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "#6B7280"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "UZvX4",
+              "name": "Separator",
+              "fill": "#E5E7EB",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "Bj3oy",
+              "name": "Action Bar",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                16,
+                0
+              ],
+              "justifyContent": "end",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "MSphs",
+                  "name": "Test Connection Button",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    20
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "narqK",
+                      "name": "Test Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "plug",
+                      "library": "lucide",
+                      "fill": "#6B7280"
+                    },
+                    {
+                      "type": "text",
+                      "id": "i0635",
+                      "name": "Test Text",
+                      "fill": "#374151",
+                      "content": "测试连接",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hVVwR",
+                  "name": "Save Button",
+                  "fill": "#FF6B35",
+                  "cornerRadius": 8,
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "NJIKE",
+                      "name": "Save Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "check",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UUmha",
+                      "name": "Save Text",
+                      "fill": "#FFFFFF",
+                      "content": "保存配置",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "M6spF",
+      "x": 3580,
+      "y": 1596,
+      "name": "Basic Info Section",
+      "width": 480,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        24
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "PNCBN",
+          "name": "Section Title",
+          "fill": "#111827",
+          "content": "基本信息",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "ial1f",
+          "name": "Supplier Name Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "G8wG6",
+              "name": "Supplier Name Label",
+              "fill": "#374151",
+              "content": "供应商名称",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "U6kQQ8",
+              "name": "Supplier Name Input",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "#F9FAFB",
+              "cornerRadius": 8,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uGgpg",
+                  "name": "Supplier Name Placeholder",
+                  "fill": "#9CA3AF",
+                  "content": "例如: DeepSeek",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xebFn",
+          "name": "Notes Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "dS79a",
+              "name": "Notes Label",
+              "fill": "#374151",
+              "content": "备注",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "f9huN",
+              "name": "Notes Input",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "#F9FAFB",
+              "cornerRadius": 8,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r9CGp",
+                  "name": "Notes Placeholder",
+                  "fill": "#9CA3AF",
+                  "content": "可选备注信息",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "l4C4P",
+          "name": "Website Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "fseiR",
+              "name": "Website Label",
+              "fill": "#374151",
+              "content": "官网链接",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "rNIiF",
+              "name": "Website Input",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "#F9FAFB",
+              "cornerRadius": 8,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TtGjs",
+                  "name": "Website Placeholder",
+                  "fill": "#9CA3AF",
+                  "content": "https://platform.example.com",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "aXG4H",
+      "x": 3580,
+      "y": 1221,
+      "name": "API Config Section",
+      "width": 500,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        24
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "A6jNc",
+          "name": "Section Title",
+          "fill": "#111827",
+          "content": "API 配置",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "NYIPA",
+          "name": "API Key Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "fqtfk",
+              "name": "API Key Label",
+              "fill": "#374151",
+              "content": "API Key",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "l3gkA",
+              "name": "API Key Input",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "#F9FAFB",
+              "cornerRadius": 8,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "K6iiS",
+                  "name": "API Key Placeholder",
+                  "fill": "#9CA3AF",
+                  "content": "sk-xxxxxxxxxxxxxxxx",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bvDM1",
+          "name": "Request URL Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "m04fU",
+              "name": "Request URL Label",
+              "fill": "#374151",
+              "content": "请求地址",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "byRvv",
+              "name": "Request URL Input",
+              "width": "fill_container",
+              "height": 40,
+              "fill": "#F9FAFB",
+              "cornerRadius": 8,
+              "stroke": "#E5E7EB",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "C5ZAv",
+                  "name": "Request URL Placeholder",
+                  "fill": "#9CA3AF",
+                  "content": "https://api.deepseek.com/anthropic",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "K9OWPy",
+      "x": 3120,
+      "y": 27,
+      "name": "Model Config Section",
+      "width": 960,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        24
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "usGu9",
+          "name": "Section Title",
+          "fill": "#111827",
+          "content": "模型配置",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "kTQs1",
+          "name": "Section Subtitle",
+          "fill": "#6B7280",
+          "content": "配置不同场景使用的模型",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "yekY1",
+          "name": "Form Row 1",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "VsbSf",
+              "name": "主模型 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j4T8f",
+                  "name": "主模型 Label",
+                  "fill": "#374151",
+                  "content": "主模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "lMQA5",
+                  "name": "主模型 Input",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "f6osa",
+              "name": "Opus 模型 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Y0nem5",
+                  "name": "Opus 模型 Label",
+                  "fill": "#374151",
+                  "content": "Opus 模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "TMot2",
+                  "name": "Opus 模型 Input",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "r3OeM1",
+          "name": "Form Row 2",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "TorgO",
+              "name": "Sonnet 模型 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UloYK",
+                  "name": "Sonnet 模型 Label",
+                  "fill": "#374151",
+                  "content": "Sonnet 模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "t3qwk",
+                  "name": "Sonnet 模型 Input",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WUvYT",
+              "name": "Haiku 模型 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "td4Rw",
+                  "name": "Haiku 模型 Label",
+                  "fill": "#374151",
+                  "content": "Haiku 模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "w6XYTV",
+                  "name": "Haiku 模型 Input",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "L0KCT",
+          "name": "Form Row 3",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "oO2nd",
+              "name": "子代理模型 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "H0CcTs",
+                  "name": "子代理模型 Label",
+                  "fill": "#374151",
+                  "content": "子代理模型",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "fQLAp",
+                  "name": "子代理模型 Input",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q36XU7",
+              "name": "推理强度 Field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TJGRs",
+                  "name": "推理强度 Label",
+                  "fill": "#374151",
+                  "content": "推理强度",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "fbwTY",
+                  "name": "推理强度 Dropdown",
+                  "width": "fill_container",
+                  "height": 40,
+                  "fill": "#F9FAFB",
+                  "cornerRadius": 8,
+                  "stroke": "#E5E7EB",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zEfdW",
+                      "name": "Dropdown Value",
+                      "fill": "#111827",
+                      "content": "max",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "um7w8",
+                      "name": "Chevron Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "#6B7280"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

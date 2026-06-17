@@ -31,10 +31,13 @@ const form = ref({
 
 const testing = ref(false)
 const testResult = ref<{ success: boolean; message: string } | null>(null)
+const saveAttempted = ref(false)
+
+// ── 校验 ──
 
 const urlError = computed(() => {
 	const url = form.value.base_url.trim()
-	if (!url) return ''
+	if (!url) return saveAttempted.value ? '请输入请求地址' : ''
 	try {
 		const parsed = new URL(url)
 		if (!['http:', 'https:'].includes(parsed.protocol)) return '仅支持 http/https 协议'
@@ -43,6 +46,63 @@ const urlError = computed(() => {
 		return 'URL 格式不合法'
 	}
 })
+
+const nameError = computed(() => (saveAttempted.value && !form.value.name.trim() ? '请输入供应商名称' : ''))
+const apiKeyError = computed(() => (saveAttempted.value && !form.value.api_key.trim() ? '请输入 API Key' : ''))
+const opusModelError = computed(() => (saveAttempted.value && !form.value.opus_model.trim() ? '请输入模型 ID' : ''))
+const sonnetModelError = computed(() => (saveAttempted.value && !form.value.sonnet_model.trim() ? '请输入模型 ID' : ''))
+const haikuModelError = computed(() => (saveAttempted.value && !form.value.haiku_model.trim() ? '请输入模型 ID' : ''))
+
+const validationErrors = computed(() => {
+	if (!saveAttempted.value) return []
+	const errors: string[] = []
+	if (!form.value.name.trim()) errors.push('供应商名称')
+	if (!form.value.api_key.trim()) errors.push('API Key')
+	if (!form.value.base_url.trim() || urlError.value) errors.push('请求地址')
+	if (!form.value.opus_model.trim()) errors.push('Opus 模型')
+	if (!form.value.sonnet_model.trim()) errors.push('Sonnet 模型')
+	if (!form.value.haiku_model.trim()) errors.push('Haiku 模型')
+	return errors
+})
+
+// ── URL 自动解析 ──
+
+function extractNameFromHost(host: string): string {
+	// api.deepseek.com → DeepSeek, api.openai.com → Openai
+	const parts = host.split('.')
+	// 取倒数第二段作为名称（跳过 api/www 等前缀和 com/net 等后缀）
+	const candidates = parts.filter(p => !['api', 'www', 'com', 'net', 'org', 'io', 'cn'].includes(p))
+	const raw = candidates[0] || parts[0] || ''
+	return raw.charAt(0).toUpperCase() + raw.slice(1)
+}
+
+let lastAutoName = ''
+let lastAutoWebsite = ''
+
+watch(
+	() => form.value.base_url,
+	url => {
+		const trimmed = url.trim()
+		if (!trimmed) return
+		try {
+			const parsed = new URL(trimmed)
+			if (!['http:', 'https:'].includes(parsed.protocol)) return
+			const website = `${parsed.protocol}//${parsed.hostname}`
+			const name = extractNameFromHost(parsed.hostname)
+			// 仅在 name/website 为空或之前是自动填充值时覆盖
+			if (!form.value.name || form.value.name === lastAutoName) {
+				form.value.name = name
+				lastAutoName = name
+			}
+			if (!form.value.website || form.value.website === lastAutoWebsite) {
+				form.value.website = website
+				lastAutoWebsite = website
+			}
+		} catch {
+			// URL 不合法时不处理
+		}
+	}
+)
 
 const modelOptions = [
 	{ label: 'Haiku', value: 'haiku' },
@@ -72,6 +132,9 @@ function populateForm(data: Omit<Provider, 'id' | 'is_active'>) {
 		sub_agent_model: data.sub_agent_model || 'haiku',
 		reasoning_level: data.reasoning_level || 'max'
 	}
+	saveAttempted.value = false
+	lastAutoName = data.name || ''
+	lastAutoWebsite = data.website || ''
 }
 
 watch(
@@ -91,7 +154,16 @@ watch(
 )
 
 function handleSave() {
-	if (!form.value.name || !form.value.api_key || !form.value.base_url || urlError.value) return
+	saveAttempted.value = true
+	if (
+		nameError.value ||
+		apiKeyError.value ||
+		urlError.value ||
+		opusModelError.value ||
+		sonnetModelError.value ||
+		haikuModelError.value
+	)
+		return
 	emit('save', { ...form.value })
 }
 
@@ -140,13 +212,22 @@ async function handleTest() {
 		<!-- 表单内容 -->
 		<div class="flex-1 overflow-y-auto px-32px py-24px">
 			<div class="max-w-640px mx-auto flex flex-col gap-24px">
+				<!-- 校验汇总 -->
+				<n-alert v-if="validationErrors.length" type="error">
+					请填写以下必填项：{{ validationErrors.join('、') }}
+				</n-alert>
 				<!-- 基本信息 -->
 				<section class="flex flex-col gap-16px">
 					<h3 class="text-16px font-600 text-gray-900 m-0">基本信息</h3>
 
 					<div class="flex flex-col gap-6px">
 						<label class="text-13px text-gray-600 font-500">供应商名称</label>
-						<n-input v-model:value="form.name" placeholder="例如：DeepSeek" />
+						<n-input
+							v-model:value="form.name"
+							placeholder="例如：DeepSeek"
+							:validation-status="nameError ? 'error' : undefined"
+							:feedback="nameError || undefined"
+						/>
 					</div>
 
 					<div class="flex flex-col gap-6px">
@@ -173,6 +254,8 @@ async function handleTest() {
 							type="password"
 							show-password-on="click"
 							placeholder="sk-xxxxxxxxxxxxxxxx"
+							:validation-status="apiKeyError ? 'error' : undefined"
+							:feedback="apiKeyError || undefined"
 						/>
 					</div>
 
@@ -203,15 +286,30 @@ async function handleTest() {
 						</div>
 						<div class="flex flex-col gap-6px">
 							<label class="text-13px text-gray-600 font-500">Opus 模型</label>
-							<n-input v-model:value="form.opus_model" placeholder="模型 ID" />
+							<n-input
+								v-model:value="form.opus_model"
+								placeholder="模型 ID"
+								:validation-status="opusModelError ? 'error' : undefined"
+								:feedback="opusModelError || undefined"
+							/>
 						</div>
 						<div class="flex flex-col gap-6px">
 							<label class="text-13px text-gray-600 font-500">Sonnet 模型</label>
-							<n-input v-model:value="form.sonnet_model" placeholder="模型 ID" />
+							<n-input
+								v-model:value="form.sonnet_model"
+								placeholder="模型 ID"
+								:validation-status="sonnetModelError ? 'error' : undefined"
+								:feedback="sonnetModelError || undefined"
+							/>
 						</div>
 						<div class="flex flex-col gap-6px">
 							<label class="text-13px text-gray-600 font-500">Haiku 模型</label>
-							<n-input v-model:value="form.haiku_model" placeholder="模型 ID" />
+							<n-input
+								v-model:value="form.haiku_model"
+								placeholder="模型 ID"
+								:validation-status="haikuModelError ? 'error' : undefined"
+								:feedback="haikuModelError || undefined"
+							/>
 						</div>
 						<div class="flex flex-col gap-6px">
 							<label class="text-13px text-gray-600 font-500">子代理模型</label>
