@@ -307,7 +307,12 @@ pub async fn test_connection(api_key: String, base_url: String) -> Result<String
     } else {
         let status = response.status();
         let body = response.text().await.unwrap_or_default();
-        Err(format!("连接失败 ({}): {}", status, body))
+        // 某些供应商可能不支持 /v1/models 端点，但 API Key 仍然有效
+        if status.as_u16() == 404 {
+            Err(format!("连接成功，但该供应商不支持 /v1/models 端点（{}）。API Key 可能仍然有效。", status))
+        } else {
+            Err(format!("连接失败 ({}): {}", status, body))
+        }
     }
 }
 ```
@@ -1113,34 +1118,26 @@ git commit -m "feat: 重构 App.vue 和 ConfigListMain，集成供应商管理"
 ## Task 9: 集成测试和清理
 
 **Files:**
-- Modify: `src/App.vue` (修复编译问题)
+- Modify: `src/App.vue` (如有编译问题则修复)
 
-- [ ] **Step 1: 修复 App.vue 中的未定义变量**
-
-在 App.vue 的 `<script setup>` 中添加缺失的 computed：
-
-```typescript
-import { ref, computed, onMounted } from 'vue'
-
-const sessionPageActive = computed(() => activePage.value === 'sessions')
-```
-
-- [ ] **Step 2: 运行完整构建**
+- [ ] **Step 1: 运行完整构建**
 
 Run: `pnpm build`
 Expected: 构建成功
 
-- [ ] **Step 3: 运行 Rust lint**
+- [ ] **Step 2: 运行 Rust lint**
 
 Run: `pnpm lint:rs`
 Expected: 无警告
 
-- [ ] **Step 4: 运行前端 lint**
+- [ ] **Step 3: 运行前端 lint**
 
 Run: `pnpm lint`
 Expected: 无错误
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 4: 修复编译问题（如有）**
+
+如果 `pnpm build` 报错，修复后提交：
 
 ```bash
 git add -A
