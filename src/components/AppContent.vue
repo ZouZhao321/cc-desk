@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useMessage } from 'naive-ui'
 import ConfigListMain from './ConfigListMain.vue'
 import ProviderForm from './ProviderForm.vue'
@@ -46,11 +46,12 @@ function handlePaste() {
 	showPasteDialog.value = true
 }
 
-function handlePasteConfirm(config: ParsedConfig) {
+async function handlePasteConfirm(config: ParsedConfig) {
 	showPasteDialog.value = false
 	editingProvider.value = null
-	initialData.value = config
 	currentView.value = 'form'
+	await nextTick()
+	initialData.value = config
 }
 
 async function handleReadCurrent() {
@@ -77,8 +78,9 @@ async function handleReadCurrent() {
 
 		const parsed = parseSettingsEnv(env)
 		editingProvider.value = null
-		initialData.value = parsed
 		currentView.value = 'form'
+		await nextTick()
+		initialData.value = parsed
 	} catch (e) {
 		message.error(`读取配置失败: ${String(e)}`)
 	}
