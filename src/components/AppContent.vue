@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useMessage } from 'naive-ui'
 import ConfigListMain from './ConfigListMain.vue'
 import ProviderForm from './ProviderForm.vue'
+import SessionHistory from './SessionHistory.vue'
 import { useProviders } from '../composables/useProviders'
 import type { Provider } from '../types'
 
@@ -19,6 +20,7 @@ const {
 	testConnection
 } = useProviders()
 
+const activePage = ref<'config' | 'sessions'>('config')
 const currentView = ref<'list' | 'form'>('list')
 const editingProvider = ref<Provider | null>(null)
 
@@ -93,13 +95,17 @@ async function handleTest(api_key: string, base_url: string) {
 	return await testConnection(api_key, base_url)
 }
 
+function handleSession() {
+	activePage.value = 'sessions'
+}
+
 onMounted(loadProviders)
 </script>
 
 <template>
 	<div class="flex flex-col w-full h-full bg-white font-sans">
 		<ConfigListMain
-			v-if="currentView === 'list'"
+			v-if="activePage === 'config' && currentView === 'list'"
 			:providers="providers"
 			:loading="loading"
 			@add="handleAdd"
@@ -107,7 +113,15 @@ onMounted(loadProviders)
 			@duplicate="handleDuplicate"
 			@delete="handleDelete"
 			@activate="handleActivate"
+			@session="handleSession"
 		/>
-		<ProviderForm v-else :provider="editingProvider" @save="handleSave" @cancel="handleBack" @test="handleTest" />
+		<ProviderForm
+			v-else-if="activePage === 'config' && currentView === 'form'"
+			:provider="editingProvider"
+			@save="handleSave"
+			@cancel="handleBack"
+			@test="handleTest"
+		/>
+		<SessionHistory v-else-if="activePage === 'sessions'" @back="activePage = 'config'" />
 	</div>
 </template>

@@ -13,6 +13,7 @@ defineEmits<{
 	duplicate: [id: string]
 	delete: [id: string]
 	activate: [provider: Provider]
+	session: []
 }>()
 </script>
 
@@ -63,6 +64,7 @@ defineEmits<{
 			<div class="flex items-center gap-8px">
 				<button
 					class="flex items-center justify-center w-32px h-32px border-none bg-gray-100 rounded-6px cursor-pointer hover:bg-gray-200 transition-colors"
+					@click="$emit('session')"
 				>
 					<svg
 						width="18"
