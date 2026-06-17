@@ -58,7 +58,8 @@ interface ProviderStore {
 
 不写入 settings.json 的 Provider 字段：
 - `name`、`notes`、`website`：仅作为元数据保存在 `providers.json`
-- `_MODEL_NAME` 系列字段：不保留
+
+当前 settings.json 中存在的 `_MODEL_NAME` 系列字段（`ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME`、`ANTHROPIC_DEFAULT_SONNET_MODEL_NAME`、`ANTHROPIC_DEFAULT_OPUS_MODEL_NAME`）在新设计中不再写入，激活供应商时会删除这些字段。
 
 ## 4. 文件存储
 
@@ -78,6 +79,8 @@ interface ProviderStore {
 **顶部栏**：
 - 左侧：应用标题 "CC-Desk"、设置按钮、同步按钮
 - 右侧：会话按钮、模板按钮、添加按钮（GAMIo）
+
+> 注：顶部栏中的设置、同步、会话、模板按钮为设计稿中已有 UI 元素，不属于本次"供应商管理"功能范围，其功能在后续迭代中实现。
 
 **供应商卡片**：
 - 左侧：拖拽手柄（视觉元素，本期不做排序功能）、供应商 Logo（首字母或图标）
@@ -187,7 +190,8 @@ interface ProviderStore {
 1. 用户点击供应商卡片的删除按钮
 2. 弹出确认对话框
 3. 确认后从 providers.json 中移除
-4. 如果删除的是激活供应商，不清除 settings.json（保留当前配置）
+4. 如果删除的是激活供应商，不清除 settings.json（保留当前配置不变）
+5. 删除后主界面刷新，被删除的激活供应商不再显示"使用中"，但 Claude Code 实际仍在使用该配置（直到用户激活其他供应商或手动修改 settings.json）
 
 ### 6.6 测试连接
 
