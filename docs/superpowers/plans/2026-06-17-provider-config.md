@@ -149,16 +149,160 @@ pub fn run() {
 }
 ```
 
-- [ ] **Step 6: 编译验证**
+- [ ] **Step 6: 添加 Provider 单元测试**
+
+在 `commands.rs` 文件末尾的 `#[cfg(test)] mod tests` 中添加：
+
+```rust
+// ── Provider 序列化/反序列化 ──
+
+#[test]
+fn provider_roundtrip() {
+    let provider = Provider {
+        id: "test-id".to_string(),
+        name: "Test Provider".to_string(),
+        notes: Some("备注".to_string()),
+        website: Some("https://example.com".to_string()),
+        api_key: "sk-test".to_string(),
+        base_url: "https://api.test.com".to_string(),
+        main_model: "sonnet".to_string(),
+        opus_model: "model-opus".to_string(),
+        sonnet_model: "model-sonnet".to_string(),
+        haiku_model: "model-haiku".to_string(),
+        sub_agent_model: "haiku".to_string(),
+        reasoning_level: "max".to_string(),
+        is_active: true,
+    };
+
+    let json = serde_json::to_string(&provider).unwrap();
+    let restored: Provider = serde_json::from_str(&json).unwrap();
+    assert_eq!(restored.id, "test-id");
+    assert_eq!(restored.name, "Test Provider");
+    assert_eq!(restored.notes, Some("备注".to_string()));
+    assert_eq!(restored.api_key, "sk-test");
+    assert!(restored.is_active);
+}
+
+#[test]
+fn provider_optional_fields_none() {
+    let provider = Provider {
+        id: "id".to_string(),
+        name: "Name".to_string(),
+        notes: None,
+        website: None,
+        api_key: String::new(),
+        base_url: String::new(),
+        main_model: String::new(),
+        opus_model: String::new(),
+        sonnet_model: String::new(),
+        haiku_model: String::new(),
+        sub_agent_model: String::new(),
+        reasoning_level: String::new(),
+        is_active: false,
+    };
+
+    let json = serde_json::to_string(&provider).unwrap();
+    assert!(!json.contains("notes"));
+    assert!(!json.contains("website"));
+
+    let restored: Provider = serde_json::from_str(&json).unwrap();
+    assert_eq!(restored.notes, None);
+    assert_eq!(restored.website, None);
+}
+
+#[test]
+fn provider_store_roundtrip() {
+    let store = ProviderStore {
+        providers: vec![
+            Provider {
+                id: "1".to_string(),
+                name: "P1".to_string(),
+                notes: None,
+                website: None,
+                api_key: String::new(),
+                base_url: String::new(),
+                main_model: String::new(),
+                opus_model: String::new(),
+                sonnet_model: String::new(),
+                haiku_model: String::new(),
+                sub_agent_model: String::new(),
+                reasoning_level: String::new(),
+                is_active: true,
+            },
+        ],
+    };
+
+    let json = serde_json::to_string(&store).unwrap();
+    let restored: ProviderStore = serde_json::from_str(&json).unwrap();
+    assert_eq!(restored.providers.len(), 1);
+    assert_eq!(restored.providers[0].name, "P1");
+}
+
+// ── derive_anthropic_model ──
+
+#[test]
+fn derive_model_haiku() {
+    assert_eq!(derive_anthropic_model("haiku", "model-h", "model-s", "model-o"), "model-h");
+}
+
+#[test]
+fn derive_model_sonnet() {
+    assert_eq!(derive_anthropic_model("sonnet", "model-h", "model-s", "model-o"), "model-s");
+}
+
+#[test]
+fn derive_model_opus() {
+    assert_eq!(derive_anthropic_model("opus", "model-h", "model-s", "model-o"), "model-o");
+}
+
+#[test]
+fn derive_model_fallback() {
+    assert_eq!(derive_anthropic_model("custom-id", "model-h", "model-s", "model-o"), "custom-id");
+}
+```
+
+- [ ] **Step 7: 提取 derive_anthropic_model 函数**
+
+在 `commands.rs` 中提取一个纯函数，使测试可以覆盖派生逻辑。在 `activate_provider` 命令之前添加：
+
+```rust
+/// 根据角色名派生 ANTHROPIC_MODEL 值
+fn derive_anthropic_model(main_model: &str, haiku: &str, sonnet: &str, opus: &str) -> String {
+    match main_model {
+        "haiku" => haiku.to_string(),
+        "sonnet" => sonnet.to_string(),
+        "opus" => opus.to_string(),
+        _ => main_model.to_string(),
+    }
+}
+```
+
+然后修改 `activate_provider` 中的派生逻辑，改为调用此函数：
+
+```rust
+let derived_model_id = derive_anthropic_model(
+    &provider.main_model,
+    &provider.haiku_model,
+    &provider.sonnet_model,
+    &provider.opus_model,
+);
+```
+
+- [ ] **Step 8: 编译验证**
 
 Run: `cd src-tauri && cargo check`
 Expected: 编译成功，无错误
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 9: 运行测试**
+
+Run: `cd src-tauri && cargo test`
+Expected: 所有测试通过
+
+- [ ] **Step 10: Commit**
 
 ```bash
 git add src-tauri/src/commands.rs src-tauri/src/lib.rs
-git commit -m "feat(rust): 添加 Provider 结构体和 providers.json IO 命令"
+git commit -m "feat(rust): 添加 Provider 结构体、IO 命令和单元测试"
 ```
 
 ---
@@ -195,12 +339,12 @@ pub fn activate_provider(provider: Provider) -> Result<(), String> {
     env.insert("ANTHROPIC_BASE_URL".into(), serde_json::json!(provider.base_url));
 
     // ANTHROPIC_MODEL 根据 main_model 角色派生
-    let derived_model_id = match provider.main_model.as_str() {
-        "haiku" => &provider.haiku_model,
-        "sonnet" => &provider.sonnet_model,
-        "opus" => &provider.opus_model,
-        _ => &provider.main_model,
-    };
+    let derived_model_id = derive_anthropic_model(
+        &provider.main_model,
+        &provider.haiku_model,
+        &provider.sonnet_model,
+        &provider.opus_model,
+    );
     env.insert("ANTHROPIC_MODEL".into(), serde_json::json!(derived_model_id));
 
     env.insert("ANTHROPIC_REASONING_MODEL".into(), serde_json::json!(provider.sub_agent_model));
