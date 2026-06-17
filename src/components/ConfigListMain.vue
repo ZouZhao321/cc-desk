@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ProviderCard from './ProviderCard.vue'
+import AddProviderMenu from './AddProviderMenu.vue'
 import type { Provider } from '../types'
 
 defineProps<{
@@ -9,6 +10,8 @@ defineProps<{
 
 defineEmits<{
 	add: []
+	paste: []
+	readCurrent: []
 	edit: [provider: Provider]
 	duplicate: [id: string]
 	delete: [id: string]
@@ -97,15 +100,7 @@ defineEmits<{
 						<line x1="9" y1="21" x2="9" y2="9" />
 					</svg>
 				</button>
-				<button
-					class="flex items-center justify-center w-36px h-36px border-none bg-[#FF6B35] rounded-full cursor-pointer hover:opacity-90 transition-opacity"
-					@click="$emit('add')"
-				>
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2">
-						<path d="M5 12h14" />
-						<path d="M12 5v14" />
-					</svg>
-				</button>
+				<AddProviderMenu @add="$emit('add')" @paste="$emit('paste')" @read-current="$emit('readCurrent')" />
 			</div>
 		</header>
 
