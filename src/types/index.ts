@@ -94,3 +94,25 @@ export interface Message {
 	model: string | null
 	is_sidechain: boolean
 }
+
+/** 供应商配置 */
+export interface Provider {
+	id: string
+	name: string
+	notes?: string
+	website?: string
+	api_key: string
+	base_url: string
+	main_model: string
+	opus_model: string
+	sonnet_model: string
+	haiku_model: string
+	sub_agent_model: string
+	reasoning_level: string
+	is_active: boolean
+}
+
+/** 供应商存储数据 */
+export interface ProviderStore {
+	providers: Provider[]
+}
