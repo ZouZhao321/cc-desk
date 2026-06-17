@@ -83,9 +83,9 @@ export function useProviders() {
 		await saveProviders()
 	}
 
-	async function testConnection(api_key: string, base_url: string) {
+	async function testConnection(base_url: string) {
 		try {
-			const result = await invoke<string>('test_connection', { apiKey: api_key, baseUrl: base_url })
+			const result = await invoke<string>('test_connection', { baseUrl: base_url })
 			return { success: true, message: result }
 		} catch (e) {
 			return { success: false, message: String(e) }

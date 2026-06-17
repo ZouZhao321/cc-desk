@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { NInput, NSelect, NAlert } from 'naive-ui'
 import { invoke } from '@tauri-apps/api/core'
 import type { Provider } from '../types'
@@ -13,7 +13,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	save: [provider: Omit<Provider, 'id' | 'is_active'>]
 	cancel: []
-	test: [api_key: string, base_url: string]
 }>()
 
 const form = ref({
@@ -32,6 +31,18 @@ const form = ref({
 
 const testing = ref(false)
 const testResult = ref<{ success: boolean; message: string } | null>(null)
+
+const urlError = computed(() => {
+	const url = form.value.base_url.trim()
+	if (!url) return ''
+	try {
+		const parsed = new URL(url)
+		if (!['http:', 'https:'].includes(parsed.protocol)) return '仅支持 http/https 协议'
+		return ''
+	} catch {
+		return 'URL 格式不合法'
+	}
+})
 
 const modelOptions = [
 	{ label: 'Haiku', value: 'haiku' },
@@ -80,17 +91,16 @@ watch(
 )
 
 function handleSave() {
-	if (!form.value.name || !form.value.api_key || !form.value.base_url) return
+	if (!form.value.name || !form.value.api_key || !form.value.base_url || urlError.value) return
 	emit('save', { ...form.value })
 }
 
 async function handleTest() {
-	if (!form.value.api_key || !form.value.base_url) return
+	if (!form.value.base_url || urlError.value) return
 	testing.value = true
 	testResult.value = null
 	try {
 		const result = await invoke<string>('test_connection', {
-			apiKey: form.value.api_key,
 			baseUrl: form.value.base_url
 		})
 		testResult.value = { success: true, message: result }
@@ -168,7 +178,12 @@ async function handleTest() {
 
 					<div class="flex flex-col gap-6px">
 						<label class="text-13px text-gray-600 font-500">请求地址</label>
-						<n-input v-model:value="form.base_url" placeholder="https://api.example.com/anthropic" />
+						<n-input
+							v-model:value="form.base_url"
+							placeholder="https://api.example.com/anthropic"
+							:validation-status="urlError ? 'error' : undefined"
+							:feedback="urlError || undefined"
+						/>
 					</div>
 				</section>
 

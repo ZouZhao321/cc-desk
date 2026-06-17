@@ -20,8 +20,7 @@ const {
 	updateProvider,
 	deleteProvider,
 	duplicateProvider,
-	activateProvider,
-	testConnection
+	activateProvider
 } = useProviders()
 
 const activePage = ref<'config' | 'sessions'>('config')
@@ -150,10 +149,6 @@ async function handleActivate(provider: Provider) {
 	}
 }
 
-async function handleTest(api_key: string, base_url: string) {
-	return await testConnection(api_key, base_url)
-}
-
 function handleSession() {
 	activePage.value = 'sessions'
 }
@@ -188,7 +183,6 @@ onMounted(loadProviders)
 			:initial-data="initialData"
 			@save="handleSave"
 			@cancel="handleBack"
-			@test="handleTest"
 		/>
 		<SessionHistory v-else-if="activePage === 'sessions'" @back="activePage = 'config'" />
 		<PasteConfigDialog v-if="showPasteDialog" @confirm="handlePasteConfirm" @cancel="showPasteDialog = false" />

@@ -3,34 +3,23 @@ use std::fs;
 use std::path::PathBuf;
 use tauri::command;
 
-/// 测试 API 连通性
+/// 测试 API 连通性（可达性探测）
+/// 任何 HTTP 响应均视为连接成功，仅网络层错误（DNS/拒绝连接/TLS/超时）视为失败
 #[command]
-pub async fn test_connection(api_key: String, base_url: String) -> Result<String, String> {
-    let url = format!("{}/v1/models", base_url.trim_end_matches('/'));
-
+pub async fn test_connection(base_url: String) -> Result<String, String> {
+    let url = base_url.trim_end_matches('/').to_string();
     let client = reqwest::Client::new();
     let response = client
         .get(&url)
-        .header("Authorization", format!("Bearer {}", api_key))
-        .timeout(std::time::Duration::from_secs(10))
+        .header("accept", "*/*")
+        .header("accept-encoding", "identity")
+        .timeout(std::time::Duration::from_secs(8))
         .send()
         .await
         .map_err(|e| format!("连接失败: {e}"))?;
 
-    if response.status().is_success() {
-        Ok("连接成功".to_string())
-    } else {
-        let status = response.status();
-        let body = response.text().await.unwrap_or_default();
-        if status.as_u16() == 404 {
-            Err(format!(
-                "连接成功，但该供应商不支持 /v1/models 端点（{}）。API Key 可能仍然有效。",
-                status
-            ))
-        } else {
-            Err(format!("连接失败 ({}): {}", status, body))
-        }
-    }
+    let status = response.status().as_u16();
+    Ok(format!("连接成功 (HTTP {status})"))
 }
 
 /// 从 ~/.claude/settings.json 提取的模型相关字段
