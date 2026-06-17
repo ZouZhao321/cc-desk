@@ -63,7 +63,6 @@ jobs:
             - uses: Swatinem/rust-cache@v2
               with:
                   workspaces: src-tauri -> target
-                  sccache: true
 
             - name: Clippy
               run: pnpm lint:rs
@@ -71,8 +70,44 @@ jobs:
             - name: Format check
               run: pnpm format:rs:check
 
-    build:
-        needs: rust-lint
+    build-frontend:
+        needs: [frontend-lint, rust-lint]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+
+            - name: Get pnpm store directory
+              shell: bash
+              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+            - uses: actions/cache@v4
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+
+            - run: pnpm install --frozen-lockfile
+
+            - name: Build frontend
+              run: pnpm build
+
+            - name: Upload frontend dist
+              uses: actions/upload-artifact@v4
+              with:
+                  name: frontend-dist
+                  path: dist/
+
+    build-rust:
+        needs: build-frontend
         strategy:
             fail-fast: false
             matrix:
@@ -100,20 +135,14 @@ jobs:
             - uses: Swatinem/rust-cache@v2
               with:
                   workspaces: src-tauri -> target
-                  sccache: true
 
-            - name: Get pnpm store directory
-              shell: bash
-              run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            - uses: actions/cache@v4
+            - name: Download frontend dist
+              uses: actions/download-artifact@v4
               with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                  name: frontend-dist
+                  path: dist/
 
-            - run: pnpm install --frozen-lockfile
-
-            - name: Build Tauri app
-              run: pnpm tauri build
+            - name: Build Rust
+              shell: bash
+              run: cargo build
+              working-directory: src-tauri

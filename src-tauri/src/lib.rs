@@ -1,6 +1,9 @@
 mod commands;
 
-use commands::{get_settings_path, read_model_config, write_model_config};
+use commands::{
+    get_session_last_message, get_settings_path, list_sessions, load_annotations, read_model_config, read_session,
+    save_annotation, write_model_config,
+};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -9,7 +12,12 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             read_model_config,
             write_model_config,
-            get_settings_path
+            get_settings_path,
+            list_sessions,
+            read_session,
+            load_annotations,
+            save_annotation,
+            get_session_last_message
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
