@@ -32,11 +32,16 @@ export function useProviders() {
 		}
 	}
 
-	async function addProvider(provider: Omit<Provider, 'id' | 'is_active'>) {
+	async function addProvider(provider: Omit<Provider, 'id' | 'is_active'>, activate = false) {
 		const newProvider: Provider = {
 			...provider,
 			id: crypto.randomUUID(),
-			is_active: false
+			is_active: activate
+		}
+		if (activate) {
+			providers.value.forEach(p => {
+				p.is_active = false
+			})
 		}
 		providers.value.push(newProvider)
 		await saveProviders()

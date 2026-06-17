@@ -29,6 +29,7 @@ const currentView = ref<'list' | 'form'>('list')
 const editingProvider = ref<Provider | null>(null)
 const initialData = ref<ParsedConfig | null>(null)
 const showPasteDialog = ref(false)
+const fromReadCurrent = ref(false)
 
 function handleAdd() {
 	editingProvider.value = null
@@ -78,6 +79,7 @@ async function handleReadCurrent() {
 
 		const parsed = parseSettingsEnv(env)
 		editingProvider.value = null
+		fromReadCurrent.value = true
 		currentView.value = 'form'
 		await nextTick()
 		initialData.value = parsed
@@ -98,12 +100,14 @@ async function handleSave(formData: Omit<Provider, 'id' | 'is_active'>) {
 			await updateProvider({ ...editingProvider.value, ...formData })
 			message.success('供应商已更新')
 		} else {
-			await addProvider(formData)
-			message.success('供应商已添加')
+			const shouldActivate = fromReadCurrent.value
+			await addProvider(formData, shouldActivate)
+			message.success(shouldActivate ? '供应商已添加并启用' : '供应商已添加')
 		}
 		currentView.value = 'list'
 		editingProvider.value = null
 		initialData.value = null
+		fromReadCurrent.value = false
 	} catch (e) {
 		message.error(String(e))
 	}
