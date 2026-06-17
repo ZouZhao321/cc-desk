@@ -18,6 +18,32 @@ pub struct ModelConfig {
     pub opus_name: String,
 }
 
+/// 供应商配置
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Provider {
+    pub id: String,
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notes: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub website: Option<String>,
+    pub api_key: String,
+    pub base_url: String,
+    pub main_model: String,
+    pub opus_model: String,
+    pub sonnet_model: String,
+    pub haiku_model: String,
+    pub sub_agent_model: String,
+    pub reasoning_level: String,
+    pub is_active: bool,
+}
+
+/// 供应商存储数据
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ProviderStore {
+    pub providers: Vec<Provider>,
+}
+
 /// 返回 ~/.claude/settings.json 的路径
 #[command]
 pub fn get_settings_path() -> Result<String, String> {
@@ -70,12 +96,7 @@ pub fn write_model_config(config: ModelConfig) -> Result<(), String> {
     env.insert("ANTHROPIC_AUTH_TOKEN".into(), serde_json::json!(config.auth_token));
     env.insert("ANTHROPIC_BASE_URL".into(), serde_json::json!(config.base_url));
     // env.ANTHROPIC_MODEL 根据 model 角色选择派生对应模型 ID
-    let derived_model_id = match config.model.as_str() {
-        "haiku" => &config.haiku_id,
-        "sonnet" => &config.sonnet_id,
-        "opus" => &config.opus_id,
-        _ => &config.model,
-    };
+    let derived_model_id = derive_anthropic_model(&config.model, &config.haiku_id, &config.sonnet_id, &config.opus_id);
     env.insert("ANTHROPIC_MODEL".into(), serde_json::json!(derived_model_id));
     env.insert(
         "ANTHROPIC_REASONING_MODEL".into(),
@@ -126,12 +147,56 @@ fn settings_path() -> Result<PathBuf, String> {
     Ok(home.join(".claude").join("settings.json"))
 }
 
+/// 返回 ~/.cc-desk/providers.json 的路径（自动创建目录）
+fn providers_path() -> Result<PathBuf, String> {
+    let home = dirs::home_dir().ok_or_else(|| "无法确定用户主目录".to_string())?;
+    let dir = home.join(".cc-desk");
+    fs::create_dir_all(&dir).map_err(|e| format!("创建 .cc-desk 目录失败: {e}"))?;
+    Ok(dir.join("providers.json"))
+}
+
 fn env_str(env: &serde_json::Value, key: &str) -> String {
     env.get(key).and_then(|v| v.as_str()).unwrap_or_default().to_string()
 }
 
 fn json_str(json: &serde_json::Value, key: &str) -> String {
     json.get(key).and_then(|v| v.as_str()).unwrap_or_default().to_string()
+}
+
+/// 根据角色名派生 ANTHROPIC_MODEL 值
+fn derive_anthropic_model(main_model: &str, haiku: &str, sonnet: &str, opus: &str) -> String {
+    match main_model {
+        "haiku" => haiku.to_string(),
+        "sonnet" => sonnet.to_string(),
+        "opus" => opus.to_string(),
+        _ => main_model.to_string(),
+    }
+}
+
+/// 读取所有供应商配置
+#[command]
+pub fn list_providers() -> Result<Vec<Provider>, String> {
+    let path = providers_path()?;
+    if !path.exists() {
+        return Ok(Vec::new());
+    }
+    let content = fs::read_to_string(&path).map_err(|e| format!("读取 providers.json 失败: {e}"))?;
+    let store: ProviderStore = serde_json::from_str(&content).map_err(|e| format!("解析 providers.json 失败: {e}"))?;
+    Ok(store.providers)
+}
+
+/// 保存所有供应商配置（原子写入）
+#[command]
+pub fn save_providers(providers: Vec<Provider>) -> Result<(), String> {
+    let path = providers_path()?;
+    let store = ProviderStore { providers };
+    let serialized = serde_json::to_string_pretty(&store).map_err(|e| format!("序列化失败: {e}"))?;
+
+    let tmp_path = path.with_extension("json.tmp");
+    fs::write(&tmp_path, &serialized).map_err(|e| format!("写入临时文件失败: {e}"))?;
+    fs::rename(&tmp_path, &path).map_err(|e| format!("重命名临时文件失败: {e}"))?;
+
+    Ok(())
 }
 
 use std::io::{BufRead, BufReader};
@@ -844,5 +909,121 @@ mod tests {
         assert_eq!(u, MessageRole::User);
         let a: MessageRole = serde_json::from_str(r#""assistant""#).unwrap();
         assert_eq!(a, MessageRole::Assistant);
+    }
+
+    // ── Provider 序列化/反序列化 ──
+
+    #[test]
+    fn provider_roundtrip() {
+        let provider = Provider {
+            id: "test-id".to_string(),
+            name: "Test Provider".to_string(),
+            notes: Some("备注".to_string()),
+            website: Some("https://example.com".to_string()),
+            api_key: "sk-test".to_string(),
+            base_url: "https://api.test.com".to_string(),
+            main_model: "sonnet".to_string(),
+            opus_model: "model-opus".to_string(),
+            sonnet_model: "model-sonnet".to_string(),
+            haiku_model: "model-haiku".to_string(),
+            sub_agent_model: "haiku".to_string(),
+            reasoning_level: "max".to_string(),
+            is_active: true,
+        };
+
+        let json = serde_json::to_string(&provider).unwrap();
+        let restored: Provider = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored.id, "test-id");
+        assert_eq!(restored.name, "Test Provider");
+        assert_eq!(restored.notes, Some("备注".to_string()));
+        assert_eq!(restored.api_key, "sk-test");
+        assert!(restored.is_active);
+    }
+
+    #[test]
+    fn provider_optional_fields_none() {
+        let provider = Provider {
+            id: "id".to_string(),
+            name: "Name".to_string(),
+            notes: None,
+            website: None,
+            api_key: String::new(),
+            base_url: String::new(),
+            main_model: String::new(),
+            opus_model: String::new(),
+            sonnet_model: String::new(),
+            haiku_model: String::new(),
+            sub_agent_model: String::new(),
+            reasoning_level: String::new(),
+            is_active: false,
+        };
+
+        let json = serde_json::to_string(&provider).unwrap();
+        assert!(!json.contains("notes"));
+        assert!(!json.contains("website"));
+
+        let restored: Provider = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored.notes, None);
+        assert_eq!(restored.website, None);
+    }
+
+    #[test]
+    fn provider_store_roundtrip() {
+        let store = ProviderStore {
+            providers: vec![Provider {
+                id: "1".to_string(),
+                name: "P1".to_string(),
+                notes: None,
+                website: None,
+                api_key: String::new(),
+                base_url: String::new(),
+                main_model: String::new(),
+                opus_model: String::new(),
+                sonnet_model: String::new(),
+                haiku_model: String::new(),
+                sub_agent_model: String::new(),
+                reasoning_level: String::new(),
+                is_active: true,
+            }],
+        };
+
+        let json = serde_json::to_string(&store).unwrap();
+        let restored: ProviderStore = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored.providers.len(), 1);
+        assert_eq!(restored.providers[0].name, "P1");
+    }
+
+    // ── derive_anthropic_model ──
+
+    #[test]
+    fn derive_model_haiku() {
+        assert_eq!(
+            derive_anthropic_model("haiku", "model-h", "model-s", "model-o"),
+            "model-h"
+        );
+    }
+
+    #[test]
+    fn derive_model_sonnet() {
+        assert_eq!(
+            derive_anthropic_model("sonnet", "model-h", "model-s", "model-o"),
+            "model-s"
+        );
+    }
+
+    #[test]
+    fn derive_model_opus() {
+        assert_eq!(
+            derive_anthropic_model("opus", "model-h", "model-s", "model-o"),
+            "model-o"
+        );
+    }
+
+    #[test]
+    fn derive_model_fallback() {
+        assert_eq!(
+            derive_anthropic_model("custom-id", "model-h", "model-s", "model-o"),
+            "custom-id"
+        );
     }
 }
