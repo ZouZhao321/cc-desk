@@ -154,6 +154,11 @@ function handleSession() {
 	activePage.value = 'sessions'
 }
 
+async function handleSync() {
+	await loadProviders()
+	message.success('配置已刷新')
+}
+
 onMounted(loadProviders)
 </script>
 
@@ -166,6 +171,7 @@ onMounted(loadProviders)
 			@add="handleAdd"
 			@paste="handlePaste"
 			@read-current="handleReadCurrent"
+			@sync="handleSync"
 			@edit="handleEdit"
 			@duplicate="handleDuplicate"
 			@delete="handleDelete"

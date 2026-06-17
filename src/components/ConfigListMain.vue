@@ -12,6 +12,7 @@ defineEmits<{
 	add: []
 	paste: []
 	readCurrent: []
+	sync: []
 	edit: [provider: Provider]
 	duplicate: [id: string]
 	delete: [id: string]
@@ -46,6 +47,7 @@ defineEmits<{
 				</button>
 				<button
 					class="flex items-center justify-center w-32px h-32px border-none bg-gray-100 rounded-6px cursor-pointer hover:bg-gray-200 transition-colors"
+					@click="$emit('sync')"
 				>
 					<svg
 						width="18"
