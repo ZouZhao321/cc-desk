@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { NInput, NSelect, NButton, NAlert } from 'naive-ui'
+import { NInput, NSelect, NAlert } from 'naive-ui'
 import type { Provider } from '../types'
 
 const props = defineProps<{
@@ -196,41 +196,43 @@ async function handleTest() {
 
 				<!-- 操作栏 -->
 				<div class="flex items-center justify-end gap-12px py-16px border-t border-gray-200">
-					<n-button :loading="testing" @click="handleTest">
-						<template #icon>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-								<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-							</svg>
-						</template>
+					<button
+						class="flex items-center gap-8px px-20px py-10px rounded-8px border border-gray-200 bg-white text-14px font-500 text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
+						:disabled="testing"
+						@click="handleTest"
+					>
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#6B7280"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+						</svg>
 						测试连接
-					</n-button>
-					<n-button type="primary" @click="handleSave">
-						<template #icon>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						</template>
+					</button>
+					<button
+						class="flex items-center gap-8px px-24px py-10px rounded-8px border-none bg-[#FF6B35] text-14px font-600 text-white cursor-pointer hover:opacity-90 transition-opacity"
+						@click="handleSave"
+					>
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polyline points="20 6 9 17 4 12" />
+						</svg>
 						保存配置
-					</n-button>
+					</button>
 				</div>
 			</div>
 		</div>
