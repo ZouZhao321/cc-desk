@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { NInput, NSelect, NAlert } from 'naive-ui'
+import { invoke } from '@tauri-apps/api/core'
 import type { Provider } from '../types'
 import type { ParsedConfig } from '../utils/parseConfig'
 
@@ -87,8 +88,17 @@ async function handleTest() {
 	if (!form.value.api_key || !form.value.base_url) return
 	testing.value = true
 	testResult.value = null
-	emit('test', form.value.api_key, form.value.base_url)
-	testing.value = false
+	try {
+		const result = await invoke<string>('test_connection', {
+			apiKey: form.value.api_key,
+			baseUrl: form.value.base_url
+		})
+		testResult.value = { success: true, message: result }
+	} catch (e) {
+		testResult.value = { success: false, message: String(e) }
+	} finally {
+		testing.value = false
+	}
 }
 </script>
 
@@ -109,12 +119,12 @@ async function handleTest() {
 					{{ provider ? '编辑供应商' : '添加供应商' }}
 				</span>
 			</div>
-			<button
+			<!-- <button
 				class="text-14px text-gray-500 bg-transparent border-none cursor-pointer hover:text-gray-700"
 				@click="emit('cancel')"
 			>
 				取消
-			</button>
+			</button> -->
 		</header>
 
 		<!-- 表单内容 -->
