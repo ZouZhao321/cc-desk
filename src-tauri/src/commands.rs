@@ -199,6 +199,79 @@ pub fn save_providers(providers: Vec<Provider>) -> Result<(), String> {
     Ok(())
 }
 
+/// 激活供应商：将配置写入 settings.json
+#[command]
+pub fn activate_provider(provider: Provider) -> Result<(), String> {
+    let path = settings_path()?;
+
+    // 读取完整 settings
+    let content = fs::read_to_string(&path).map_err(|e| format!("读取 settings.json 失败: {e}"))?;
+    let mut json: serde_json::Value =
+        serde_json::from_str(&content).map_err(|e| format!("解析 settings.json 失败: {e}"))?;
+
+    // 确保 env 对象存在
+    if json.get("env").is_none() {
+        json["env"] = serde_json::json!({});
+    }
+    let env = json["env"].as_object_mut().ok_or("env 不是对象类型")?;
+
+    // 写入模型相关字段
+    env.insert("ANTHROPIC_AUTH_TOKEN".into(), serde_json::json!(provider.api_key));
+    env.insert("ANTHROPIC_BASE_URL".into(), serde_json::json!(provider.base_url));
+
+    // ANTHROPIC_MODEL 根据 main_model 角色派生
+    let derived_model_id = derive_anthropic_model(
+        &provider.main_model,
+        &provider.haiku_model,
+        &provider.sonnet_model,
+        &provider.opus_model,
+    );
+    env.insert("ANTHROPIC_MODEL".into(), serde_json::json!(derived_model_id));
+
+    env.insert(
+        "ANTHROPIC_REASONING_MODEL".into(),
+        serde_json::json!(provider.sub_agent_model),
+    );
+    env.insert(
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL".into(),
+        serde_json::json!(provider.haiku_model),
+    );
+    env.insert(
+        "ANTHROPIC_DEFAULT_SONNET_MODEL".into(),
+        serde_json::json!(provider.sonnet_model),
+    );
+    env.insert(
+        "ANTHROPIC_DEFAULT_OPUS_MODEL".into(),
+        serde_json::json!(provider.opus_model),
+    );
+    env.insert(
+        "CLAUDE_CODE_EFFORT_LEVEL".into(),
+        serde_json::json!(provider.reasoning_level),
+    );
+
+    // 删除 _MODEL_NAME 系列字段
+    env.remove("ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME");
+    env.remove("ANTHROPIC_DEFAULT_SONNET_MODEL_NAME");
+    env.remove("ANTHROPIC_DEFAULT_OPUS_MODEL_NAME");
+
+    // 更新顶层 model 字段
+    json["model"] = serde_json::json!(provider.main_model);
+
+    // 序列化
+    let serialized = serde_json::to_string_pretty(&json).map_err(|e| format!("序列化失败: {e}"))?;
+
+    // 备份: settings.json -> settings.json.bak
+    let bak_path = path.with_extension("json.bak");
+    fs::copy(&path, &bak_path).map_err(|e| format!("创建备份失败: {e}"))?;
+
+    // 原子写入: 先写 .tmp 再 rename
+    let tmp_path = path.with_extension("json.tmp");
+    fs::write(&tmp_path, &serialized).map_err(|e| format!("写入临时文件失败: {e}"))?;
+    fs::rename(&tmp_path, &path).map_err(|e| format!("重命名临时文件失败: {e}"))?;
+
+    Ok(())
+}
+
 use std::io::{BufRead, BufReader};
 
 /// 会话元数据（列表页使用）
