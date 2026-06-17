@@ -3,12 +3,16 @@ import { ref, computed, onMounted } from 'vue'
 import { NConfigProvider, NMessageProvider } from 'naive-ui'
 import ConfigListMain from './components/ConfigListMain.vue'
 import ConfigDetail from './components/ConfigDetail.vue'
+import SessionHistory from './components/SessionHistory.vue'
 import { useSettings } from './composables/useSettings'
 import type { InheritedItem, ProjectOverride, ProjectListItem } from './types'
 
 const { loadConfig } = useSettings()
 
+const activePage = ref<'config' | 'sessions'>('config')
 const currentView = ref<'list' | 'detail'>('list')
+const sessionDetailView = ref(false)
+const sessionPageActive = computed(() => activePage.value === 'sessions')
 const activeScope = ref('global')
 const activeTab = ref<'project' | 'skills' | 'mcp' | 'plugins'>('skills')
 
@@ -420,38 +424,98 @@ function handleSync() {
 	// TODO: 同步配置
 }
 
+function handleSessionDetailChange(isDetail: boolean) {
+	sessionDetailView.value = isDetail
+}
+
 onMounted(loadConfig)
 </script>
 
 <template>
 	<n-config-provider>
 		<n-message-provider>
-			<ConfigListMain
-				v-if="currentView === 'list'"
-				:scopes="scopes"
-				@select="handleSelectScope"
-				@add="handleAdd"
-				@settings="handleSettings"
-				@sync="handleSync"
-			/>
-			<ConfigDetail
-				v-else
-				:config-name="configName"
-				:active-tab="activeTab"
-				:items="currentItems"
-				:mode="activeScope === 'global' ? 'global' : 'project'"
-				:inherited-items="currentInherited"
-				:overrides="activeTab === 'mcp' ? projectOverrides : undefined"
-				:projects="activeTab === 'project' ? projects : undefined"
-				:inherited-count="currentInheritedCount"
-				@back="handleBack"
-				@tab-change="handleTabChange"
-				@toggle="handleToggle"
-				@save="handleSave"
-				@reset="handleReset"
-				@override-update="handleOverrideUpdate"
-				@override-remove="handleOverrideRemove"
-			/>
+			<div class="flex flex-col w-full h-full bg-white font-sans">
+				<!-- 顶部 Tab 栏 -->
+				<div
+					v-if="!sessionPageActive"
+					class="flex items-center h-40px px-24px bg-white border-b border-gray-100 shrink-0 gap-4px"
+				>
+					<button
+						class="flex items-center gap-6px px-12px py-6px rounded-6px text-13px transition-colors"
+						:class="
+							activePage === 'config' ? 'bg-indigo-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+						"
+						@click="activePage = 'config'"
+					>
+						<svg
+							class="w-14px h-14px"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<circle cx="12" cy="12" r="3" />
+							<path
+								d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+							/>
+						</svg>
+						Config
+					</button>
+					<button
+						class="flex items-center gap-6px px-12px py-6px rounded-6px text-13px transition-colors"
+						:class="
+							activePage === 'sessions' ? 'bg-indigo-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+						"
+						@click="activePage = 'sessions'"
+					>
+						<svg
+							class="w-14px h-14px"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+						</svg>
+						Sessions
+					</button>
+				</div>
+
+				<!-- 内容区 -->
+				<div class="flex-1 overflow-hidden">
+					<ConfigListMain
+						v-if="activePage === 'config' && currentView === 'list'"
+						:scopes="scopes"
+						@select="handleSelectScope"
+						@add="handleAdd"
+						@settings="handleSettings"
+						@sync="handleSync"
+					/>
+					<ConfigDetail
+						v-else-if="activePage === 'config' && currentView === 'detail'"
+						:config-name="configName"
+						:active-tab="activeTab"
+						:items="currentItems"
+						:mode="activeScope === 'global' ? 'global' : 'project'"
+						:inherited-items="currentInherited"
+						:overrides="activeTab === 'mcp' ? projectOverrides : undefined"
+						:projects="activeTab === 'project' ? projects : undefined"
+						:inherited-count="currentInheritedCount"
+						@back="handleBack"
+						@tab-change="handleTabChange"
+						@toggle="handleToggle"
+						@save="handleSave"
+						@reset="handleReset"
+						@override-update="handleOverrideUpdate"
+						@override-remove="handleOverrideRemove"
+					/>
+					<SessionHistory
+						v-else-if="activePage === 'sessions'"
+						@detail-change="handleSessionDetailChange"
+						@back="activePage = 'config'"
+					/>
+				</div>
+			</div>
 		</n-message-provider>
 	</n-config-provider>
 </template>
