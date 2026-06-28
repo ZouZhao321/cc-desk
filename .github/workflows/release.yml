@@ -64,6 +64,13 @@ jobs:
 
             - run: pnpm install --frozen-lockfile
 
+            - name: Setup virtual display (Linux)
+              if: runner.os == 'Linux'
+              run: |
+                  sudo apt-get install -y xvfb
+                  Xvfb :99 -screen 0 1024x768x24 &
+                  echo "DISPLAY=:99" >> $GITHUB_ENV
+
             - uses: tauri-apps/tauri-action@v0
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
